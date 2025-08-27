@@ -1,0 +1,13 @@
+{
+  "name": "api-mobilelegends",
+  "version": "1.0.0",
+  "description": "API REST de Mobile Legends con Node.js + Express y datos de héroes con skills",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}
