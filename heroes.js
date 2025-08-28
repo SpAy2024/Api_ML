@@ -1,30 +1,30 @@
 const heroes = [
-  {
+ {
     id: 1,
     nombre: "Miya",
-    rol: "Marksman",
+    rol: "Tirador",
     winRate: "49%",
     imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_32c0d9d3a727a9052754296af6251435.png",
     icon: "https://akmweb.youngjoygame.com/web/gms/image/025c69a764924f4bac526a2662f1a0b9.png",
     guia: "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0iAEVjjAAC2G6fDQV8498.jpg",
     skills: [
       {
-        nombre: "Bendición de la luna",
+        nombre: "Buff",
         descripcion: "Alucard salta hacia adelante y causa daño físico a los enemigos.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_fbe01740efd779f6059fd2313b427457.png"
       },
       {
-        nombre: "Flecha de luna",
+        nombre: "Buff",
         descripcion: "Alucard golpea en círculo causando daño a los enemigos cercanos.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_de41566ded345f89064e32da9dfd8893.png"
       },
       {
-        nombre: "Flecha del eclipse",
+        nombre: "CC",
         descripcion: "Lanza una onda de energía hacia adelante causando gran daño.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_c5771dd5686278640dabfaa26839545c.png"
       },
       {
-        nombre: "Luz de luna oculta",
+        nombre: "Ocultar",
         descripcion: "Lanza una onda de energía hacia adelante causando gran daño.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_361546d795e6df7029a1cf1252e57ac8.png"
       }
@@ -33,29 +33,29 @@ const heroes = [
   {
     id: 2,
     nombre: "Balmond",
-    rol: "Marksman",
+    rol: "Combatiente",
     winRate: "52%",
     imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_774d5cdd7ab9bed0afc7e11dc9d1c97d.png",
     icon: "https://akmweb.youngjoygame.com/web/gms/image/629e282165d4b63deceaf350426ea440.png",
     guia: "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0iAKWmEAADHGo6-9Ls758.jpg",
     skills: [
       {
-        nombre: "Sed de sangre",
+        nombre: "Curar",
         descripcion: "Miya dispara flechas dobles, causando más daño.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_a9aa00dcaf998c9636e1dbb874a225c5.png"
       },
       {
-        nombre: "Bloqueo del alma",
+        nombre: "Parpadeo",
         descripcion: "Dispara una lluvia de flechas que ralentiza y daña a los enemigos.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_8bfe9cffa391a97995c46977e95d4be8.png"
       },
       {
-        nombre: "Barrido ciclónico",
+        nombre: "AOE",
         descripcion: "Miya se vuelve invisible y aumenta su velocidad de ataque.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_5120ddf10175a28628b37ddb846df631.png"
       },
       {
-        nombre: "Contraataque letal",
+        nombre: "Daño explosivo",
         descripcion: "Miya se vuelve invisible y aumenta su velocidad de ataque.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_0a7365234448da509cb88a0baf2b92dd.png"
       }
@@ -63,7 +63,7 @@ const heroes = [
   },
   {
     id: 3,
-    nombre: "Sable",
+    nombre: "Saber",
     rol: "Asesino",
     winRate: "49.7%",
     imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_75f50285862c6c34aa1770b11d00b4f8.png",
@@ -71,24 +71,183 @@ const heroes = [
     guia: "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0uANltIAAC78dciNUQ747.jpg",
     skills: [
       {
-        nombre: "La perdición del enemigo",
+        nombre: "Debuff",
         descripcion: "Eudora lanza rayos hacia adelante causando daño mágico.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_1ec282b532be7af31153ce75b206f112.png"
       },
       {
-        nombre: "Espada en órbita",
+        nombre: "AOE",
         descripcion: "Lanza un rayo que aturde al objetivo.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_c6294839bbadfa6f203cd57bdc15efe2.png"
       },
       {
-        nombre: "Cargar",
+        nombre: "Parpadeo",
         descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_8607d91bbdff281d5bba7618f3ed4c98.png"
       },
       {
-        nombre: "Triple barrido",
+        nombre: "Daño explosivo",
         descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_fc47930fd50e062bf6e8c8c0398e237c.png"
+      }
+    ]
+  },
+  {
+    id: 4,
+    nombre: "Alice",
+    rol: "Mago",
+    winRate: "54.4%",
+    imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e7f782918c687ed9c06e76f297814d58.png",
+    icon: "https://akmweb.youngjoygame.com/web/gms/image/1c6985dd0caec2028ccb6d1b8ca95e0f.png",
+    guia: "https://akmweb.youngjoygame.com/web/gms/image/10c7be13c2045003e76dee7282d42d09.jpg",
+    skills: [
+      {
+        nombre: "Buff",
+        descripcion: "Eudora lanza rayos hacia adelante causando daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d4efd4dc88ba1f3ab47c15e1b57abdaa.png"
+      },
+      {
+        nombre: "Parpadeo",
+        descripcion: "Lanza un rayo que aturde al objetivo.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_49c3d7488b80adf5e638636baf7b477c.png"
+      },
+      {
+        nombre: "CC",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_39667b2eab397f0aeb7c3e4cbb811dcf.png"
+      },
+      {
+        nombre: "AOE",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_68aedf6c213760198cb25d45fa8a0bc0.png"
+      }
+    ]
+  },
+  {
+    id: 5,
+    nombre: "Nana",
+    rol: "Mago",
+    winRate: "54.4%",
+    imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d3ef9fa051f8643b1345accd72c48abf.png",
+    icon: "https://akmweb.youngjoygame.com/web/gms/image/1c6985dd0caec2028ccb6d1b8ca95e0f.png",
+    guia: "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0yANPQqAADDRHYfs6A992.jpg",
+    skills: [
+      {
+        nombre: "Inmunidad",
+        descripcion: "Eudora lanza rayos hacia adelante causando daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_40f1ef3190c16e8bedac960e5d600ae0.png"
+      },
+      {
+        nombre: "AOE",
+        descripcion: "Lanza un rayo que aturde al objetivo.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_54aff0ecbd71fb7e4819568698dfbee6.png"
+      },
+      {
+        nombre: "CC",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_1551014a72caf56ad15d79a118d767ed.png"
+      },
+      {
+        nombre: "Daño explosivo",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_32610623c520254cccf0e02a5fac9e44.png"
+      }
+    ]
+  },
+  {
+    id: 6,
+    nombre: "Tigreal",
+    rol: "Tanque",
+    winRate: "46,6%",
+    imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_4e0005dbfb1376beaccc54ef7aa39375.png",
+    icon: "https://akmweb.youngjoygame.com/web/gms/image/60638c59536d9505c9c731af13f7fdfd.png",
+    guia: "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0yAKUCzAADC2kc8QOY006.jpg",
+    skills: [
+      {
+        nombre: "Buff",
+        descripcion: "Eudora lanza rayos hacia adelante causando daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_5b028ce65e323d962d7060705f59743f.png"
+      },
+      {
+        nombre: "AOE",
+        descripcion: "Lanza un rayo que aturde al objetivo.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_8e00063700ab16f53d840986b98aae25.png"
+      },
+      {
+        nombre: "Carga",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e9baf5e58ce0fb23c0fcb6176cc8ed5d.png"
+      },
+      {
+        nombre: "CC",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_46e5c2b6f8fd6fda995a63d5c10f19e5.png"
+      }
+    ]
+  },
+  {
+    id: 7,
+    nombre: "Alucard",
+    rol: ["Combatiente", "Asesino"],
+    winRate: "54.2%",
+    imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_2a0606e575ae278db77134b50ccef7ac.png",
+    icon: [
+      "https://akmweb.youngjoygame.com/web/gms/image/629e282165d4b63deceaf350426ea440.png",
+      "https://akmweb.youngjoygame.com/web/gms/image/d0b8b65a47fc43dc7bb2bac447072fd2.png"
+      ],
+    guia: "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0yAWhPQAADDFsenTnk498.jpg",
+    skills: [
+      {
+        nombre: "Buff",
+        descripcion: "Eudora lanza rayos hacia adelante causando daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_51d252e4e734a49c0a8a2a00a8ba99b4.png"
+      },
+      {
+        nombre: "AOE",
+        descripcion: "Lanza un rayo que aturde al objetivo.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_7862dada550b5e9258bbefafee78a296.png"
+      },
+      {
+        nombre: "AOE",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_f9a0e6ddbddbf009ebb0736e320170fa.png"
+      },
+      {
+        nombre: "Buff",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d4325e672bb7b7a1add8501525684e19.png"
+      }
+    ]
+  },
+  {
+    id: 8,
+    nombre: "Karina",
+    rol: "Asesino",
+    winRate: "46.5%",
+    imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_7745192fc72de28d09e839cd7c250bae.png",
+    icon: "https://akmweb.youngjoygame.com/web/gms/image/d0b8b65a47fc43dc7bb2bac447072fd2.png",
+    guia: "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0yAYq8DAADbq9SMl2g000.jpg",
+    linea: "https://akmweb.youngjoygame.com/web/gms/image/de611167c7310681135f0b4198137bfa.svg",
+    skills: [
+      {
+        nombre: "Buff",
+        descripcion: "Eudora lanza rayos hacia adelante causando daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_fb37b0cbc5e9952ec756e3f58c5df22f.png"
+      },
+      {
+        nombre: "Buff",
+        descripcion: "Lanza un rayo que aturde al objetivo.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_94328c502082dd096eb4be3d95655b07.png"
+      },
+      {
+        nombre: "AOE",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_da228e14f0756e84580cb08ede6a1283.png"
+      },
+      {
+        nombre: "Daño explosivo",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_889d1d71cef50ed1121ee68b5097954e.png"
       }
     ]
   }
