@@ -95,10 +95,13 @@ const heroes = [
   {
     id: 4,
     nombre: "Alice",
-    rol: "Mago",
+    rol: ["Mago", "Tanque"],
     winRate: "54.4%",
     imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e7f782918c687ed9c06e76f297814d58.png",
-    icon: "https://akmweb.youngjoygame.com/web/gms/image/1c6985dd0caec2028ccb6d1b8ca95e0f.png",
+    icon: [
+      "https://akmweb.youngjoygame.com/web/gms/image/1c6985dd0caec2028ccb6d1b8ca95e0f.png",
+      "https://akmweb.youngjoygame.com/web/gms/image/60638c59536d9505c9c731af13f7fdfd.png"
+      ],
     guia: "https://akmweb.youngjoygame.com/web/gms/image/10c7be13c2045003e76dee7282d42d09.jpg",
     skills: [
       {
@@ -248,6 +251,102 @@ const heroes = [
         nombre: "Daño explosivo",
         descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
         imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_889d1d71cef50ed1121ee68b5097954e.png"
+      }
+    ]
+  },
+  {
+    id: 9,
+    nombre: "Akai",
+    rol: "Tanque",
+    winRate: "50.5%",
+    imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_48404e80a426805d1b6072b3b33e2c3a.png",
+    icon: "https://akmweb.youngjoygame.com/web/gms/image/60638c59536d9505c9c731af13f7fdfd.png",
+    guia: "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0uAZOlBAAC1EbTpbm0131.jpg",
+    skills: [
+      {
+        nombre: "Buff",
+        descripcion: "Eudora lanza rayos hacia adelante causando daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_889b0e22757b7f4bfbc2cfa4e6b39d98.png"
+      },
+      {
+        nombre: "CC",
+        descripcion: "Lanza un rayo que aturde al objetivo.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_4c47ec169528dd5f35ee0792fd26fcf8.png"
+      },
+      {
+        nombre: "AOE",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_57c97caeff255d9d646d4c9b3d100211.png"
+      },
+      {
+        nombre: "CC",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_31701b6b54bacf44d29317ab6ba86f64.png"
+      }
+    ]
+  },
+  {
+    id: 10,
+    nombre: "Franco",
+    rol: "Tanque",
+    winRate: "46.9%",
+    imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d9a0d6432cc0610a2232b2d2ed5e09ce.png",
+    icon: "https://akmweb.youngjoygame.com/web/gms/image/60638c59536d9505c9c731af13f7fdfd.png",
+    guia: "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0yAEwxpAAC_t43Qv40777.jpg",
+    skills: [
+      {
+        nombre: "Buff",
+        descripcion: "Eudora lanza rayos hacia adelante causando daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_f28d9d7b5ae159997dc00f992cec8881.png"
+      },
+      {
+        nombre: "CC",
+        descripcion: "Lanza un rayo que aturde al objetivo.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_eb5032e0d6d264f97c30f95237cc2ed4.png"
+      },
+      {
+        nombre: "Slow",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_4ed340f228f854d69477c6d492ab6046.png"
+      },
+      {
+        nombre: "CC",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_b19953d95c51bcb9292e743e84d71071.png"
+      }
+    ]
+  },
+  {
+    id: 11,
+    nombre: "Bane",
+    rol: ["Combatiente", "Mago"],
+    winRate: "51.1%",
+    imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_846a816f7905f17c81cb35e7f3ff1c3e.png",
+    icon: [
+          "https://akmweb.youngjoygame.com/web/gms/image/629e282165d4b63deceaf350426ea440.png",
+          "https://akmweb.youngjoygame.com/web/gms/image/1c6985dd0caec2028ccb6d1b8ca95e0f.png"
+          ],
+    guia: "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0yAETaPAADCzmYS0WQ037.jpg",
+    skills: [
+      {
+        nombre: "Explosión",
+        descripcion: "Eudora lanza rayos hacia adelante causando daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_6458e01eb437665b82e4cd27c10a4344.png"
+      },
+      {
+        nombre: "Daño",
+        descripcion: "Lanza un rayo que aturde al objetivo.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_c0b05da138f56fff0f5876884c8a2036.png"
+      },
+      {
+        nombre: "AOE",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_71a139065a16f485cd6b13bec193c499.png"
+      },
+      {
+        nombre: "CC",
+        descripcion: "Invoca un rayo masivo que inflige gran daño mágico.",
+        imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_fe8c4a45d27cc7d56b893a31138b8a4d.png"
       }
     ]
   }
