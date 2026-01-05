@@ -588,6 +588,38 @@ const heroes = [
       }
     ],
     "linea": ""
+  },
+  {
+    "id": 19,
+    "nombre": "Fanny",
+    "rol": "Asesino",
+    "winRate": "43.97%",
+    "imagen": "https://wsrv.nl/?url=https://akmweb.youngjoygame.com/web/svnres/file/mlbb/homepage/100_74fabc6c0d5db065fbb836b6879f36ca.jpg",
+    "icon": "https://akmweb.youngjoygame.com/web/gms/image/d0b8b65a47fc43dc7bb2bac447072fd2.png",
+    "guia": "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg2-AOq87AADKHuEuwtM333.jpg",
+    "skills": [
+      {
+        "nombre": "Buff",
+        "descripcion": "Superioridad aérea",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_9010ffb0bfdac45531cb9977a26ae32d.png"
+      },
+      {
+        "nombre": "Área de efecto",
+        "descripcion": "Ataque de tornado",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_bf2db24c7635421134610a42e0b61005.png"
+      },
+      {
+        "nombre": "Movilidad",
+        "descripcion": "Cable de acero",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_0dacda6f2198ccd2a3e1dcd444065d7a.png"
+      },
+      {
+        "nombre": "Movilidad en ráfagas",
+        "descripcion": "Garganta cortada",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_c7f6411c4bb0027e0fbd8ef98ef7e770.png"
+      }
+    ],
+    "linea": ""
   }
 ];
 
