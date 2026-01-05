@@ -3,217 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración - Héroes Mobile Legends</title>
+    <title>Panel Admin - ML Heroes</title>
     <link rel="stylesheet" href="/admin-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1><i class="fas fa-gamepad"></i> Panel de Administración - Héroes MLBB</h1>
-            <p class="subtitle">Agregar nuevos héroes al sistema</p>
-            <div class="api-info">
-                <a href="/" target="_blank" class="api-link">
-                    <i class="fas fa-code"></i> Ver API REST
-                </a>
-                <span class="api-status" id="apiStatus">
-                    <i class="fas fa-circle"></i> Conectado
-                </span>
-            </div>
+            <h1><i class="fas fa-robot"></i> Panel Admin - Auto Scraper MLBB</h1>
+            <p class="subtitle">Obtén datos automáticamente del sitio oficial</p>
         </header>
 
         <div class="content-wrapper">
             <main class="main-content">
+                <!-- SECCIÓN SCRAPER -->
+                <div class="scraper-section">
+                    <h2><i class="fas fa-download"></i> Obtener Héroe Automáticamente</h2>
+                    <div class="scraper-container">
+                        <div class="scraper-options">
+                            <div class="option-tabs">
+                                <button class="tab-btn active" data-tab="by-id">Por ID</button>
+                                <button class="tab-btn" data-tab="by-name">Por Nombre</button>
+                            </div>
+                            
+                            <div class="tab-content active" id="tab-by-id">
+                                <div class="form-group">
+                                    <label for="heroIdInput">ID del Héroe</label>
+                                    <input type="number" id="heroIdInput" placeholder="Ej: 127 (para Layla)">
+                                    <small class="form-hint">
+                                        ID se encuentra en la URL: <code>heroid=127</code><br>
+                                        Ejemplos: 127(Layla), 128(Miya), 129(Zilong)
+                                    </small>
+                                </div>
+                                <button id="scrapeByIdBtn" class="btn btn-scrape">
+                                    <i class="fas fa-search"></i> Obtener por ID
+                                </button>
+                            </div>
+                            
+                            <div class="tab-content" id="tab-by-name">
+                                <div class="form-group">
+                                    <label for="heroNameInput">Nombre del Héroe</label>
+                                    <input type="text" id="heroNameInput" placeholder="Ej: Layla, Miya, Alucard">
+                                </div>
+                                <button id="scrapeByNameBtn" class="btn btn-scrape">
+                                    <i class="fas fa-search"></i> Buscar por Nombre
+                                </button>
+                            </div>
+                            
+                            <div class="scraper-info">
+                                <h4><i class="fas fa-lightbulb"></i> ¿Cómo funciona?</h4>
+                                <ul>
+                                    <li>Conecta al sitio oficial de Mobile Legends</li>
+                                    <li>Extrae información automáticamente</li>
+                                    <li>Rellena el formulario con los datos obtenidos</li>
+                                    <li>Revisa y guarda los datos</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="scraper-results" id="scraperResults">
+                            <div class="results-placeholder">
+                                <i class="fas fa-cloud-download-alt"></i>
+                                <h3>Esperando datos...</h3>
+                                <p>Usa el scraper para obtener información del héroe</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORMULARIO (actualizado) -->
                 <div class="form-section">
-                    <h2><i class="fas fa-user-plus"></i> Agregar Nuevo Héroe</h2>
-                    
+                    <h2><i class="fas fa-edit"></i> Formulario del Héroe</h2>
                     <div class="form-container">
                         <form id="heroForm">
-                            <div class="form-group">
-                                <label for="heroName">Nombre del Héroe *</label>
-                                <input type="text" id="heroName" required placeholder="Ej: Miya">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="heroRole">Rol(es) *</label>
-                                <div class="role-input-container">
-                                    <input type="text" id="heroRole" required placeholder="Ej: Tirador o Tirador,Asesino">
-                                    <small class="form-hint">Para múltiples roles, separar con coma (ej: Combatiente,Asesino)</small>
+                            <input type="hidden" id="heroId" value="">
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="heroName">Nombre *</label>
+                                    <input type="text" id="heroName" required>
                                 </div>
-                                <div class="role-examples">
-                                    <span class="role-tag">Tirador</span>
-                                    <span class="role-tag">Asesino</span>
-                                    <span class="role-tag">Mago</span>
-                                    <span class="role-tag">Tanque</span>
-                                    <span class="role-tag">Combatiente</span>
-                                    <span class="role-tag">Soporte</span>
+                                
+                                <div class="form-group">
+                                    <label for="heroRole">Rol(es) *</label>
+                                    <select id="heroRole" required>
+                                        <option value="">Seleccionar</option>
+                                        <option value="Tirador">Tirador</option>
+                                        <option value="Asesino">Asesino</option>
+                                        <option value="Mago">Mago</option>
+                                        <option value="Tanque">Tanque</option>
+                                        <option value="Combatiente">Combatiente</option>
+                                        <option value="Soporte">Soporte</option>
+                                    </select>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="winRate">Win Rate *</label>
-                                <input type="text" id="winRate" required placeholder="Ej: 49.5%">
-                                <small class="form-hint">Formato: número seguido de % (ej: 52.3%)</small>
+                                <input type="text" id="winRate" required placeholder="49.5%">
                             </div>
 
                             <div class="form-group">
-                                <label for="heroImage">URL de la imagen principal *</label>
-                                <input type="url" id="heroImage" required placeholder="https://akmweb.../imagen.png">
+                                <label for="heroImage">URL Imagen *</label>
+                                <div class="url-input-group">
+                                    <input type="url" id="heroImage" required>
+                                    <button type="button" class="btn-small" onclick="testImage('heroImage')">
+                                        <i class="fas fa-eye"></i> Ver
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="iconImage">URL del icono *</label>
-                                <input type="url" id="iconImage" required placeholder="https://akmweb.../icono.png">
-                                <small class="form-hint">Para múltiples iconos, separar URLs con coma</small>
+                                <label for="iconImage">URL Icono *</label>
+                                <input type="url" id="iconImage" required>
                             </div>
 
-                            <div class="form-group">
-                                <label for="guideImage">URL de la imagen de guía</label>
-                                <input type="url" id="guideImage" placeholder="https://img.mobilelegends.com/.../guia.jpg">
-                            </div>
-
+                            <!-- Habilidades -->
                             <div class="skills-section">
-                                <h3><i class="fas fa-bolt"></i> Habilidades (4 obligatorias)</h3>
-                                
-                                <div class="skill-group">
-                                    <h4>Habilidad 1</h4>
-                                    <div class="form-group">
-                                        <label for="skill1Name">Nombre *</label>
-                                        <input type="text" id="skill1Name" required placeholder="Ej: Buff">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="skill1Desc">Descripción *</label>
-                                        <textarea id="skill1Desc" required rows="3" placeholder="Descripción de la habilidad..."></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="skill1Image">URL de la imagen *</label>
-                                        <input type="url" id="skill1Image" required placeholder="https://akmweb.../skill1.png">
-                                    </div>
-                                </div>
-
-                                <div class="skill-group">
-                                    <h4>Habilidad 2</h4>
-                                    <div class="form-group">
-                                        <label for="skill2Name">Nombre *</label>
-                                        <input type="text" id="skill2Name" required placeholder="Ej: AOE">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="skill2Desc">Descripción *</label>
-                                        <textarea id="skill2Desc" required rows="3" placeholder="Descripción de la habilidad..."></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="skill2Image">URL de la imagen *</label>
-                                        <input type="url" id="skill2Image" required placeholder="https://akmweb.../skill2.png">
-                                    </div>
-                                </div>
-
-                                <div class="skill-group">
-                                    <h4>Habilidad 3</h4>
-                                    <div class="form-group">
-                                        <label for="skill3Name">Nombre *</label>
-                                        <input type="text" id="skill3Name" required placeholder="Ej: CC">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="skill3Desc">Descripción *</label>
-                                        <textarea id="skill3Desc" required rows="3" placeholder="Descripción de la habilidad..."></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="skill3Image">URL de la imagen *</label>
-                                        <input type="url" id="skill3Image" required placeholder="https://akmweb.../skill3.png">
-                                    </div>
-                                </div>
-
-                                <div class="skill-group">
-                                    <h4>Habilidad 4 (Ultimate)</h4>
-                                    <div class="form-group">
-                                        <label for="skill4Name">Nombre *</label>
-                                        <input type="text" id="skill4Name" required placeholder="Ej: Daño explosivo">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="skill4Desc">Descripción *</label>
-                                        <textarea id="skill4Desc" required rows="3" placeholder="Descripción de la habilidad..."></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="skill4Image">URL de la imagen *</label>
-                                        <input type="url" id="skill4Image" required placeholder="https://akmweb.../skill4.png">
-                                    </div>
+                                <h3><i class="fas fa-bolt"></i> Habilidades</h3>
+                                <div class="skills-grid">
+                                    <!-- Habilidades 1-4 -->
                                 </div>
                             </div>
 
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-primary" id="saveBtn">
+                                <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save"></i> Guardar Héroe
                                 </button>
-                                <button type="button" id="resetBtn" class="btn btn-secondary">
-                                    <i class="fas fa-redo"></i> Limpiar Formulario
+                                <button type="button" id="clearFormBtn" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Limpiar
                                 </button>
-                                <button type="button" id="exampleBtn" class="btn btn-example">
-                                    <i class="fas fa-magic"></i> Cargar Ejemplo
+                                <button type="button" id="autoFillBtn" class="btn btn-warning">
+                                    <i class="fas fa-magic"></i> Auto-completar
                                 </button>
                             </div>
                         </form>
-                    </div>
-                </div>
-
-                <div class="preview-section">
-                    <h2><i class="fas fa-eye"></i> Vista Previa</h2>
-                    <div class="preview-container">
-                        <div id="heroPreview" class="hero-preview">
-                            <!-- La vista previa se cargará aquí -->
-                        </div>
                     </div>
                 </div>
             </main>
 
             <aside class="sidebar">
                 <div class="info-panel">
-                    <h3><i class="fas fa-info-circle"></i> Información del Sistema</h3>
-                    
+                    <h3><i class="fas fa-database"></i> Base de Datos</h3>
                     <div class="info-card">
                         <div class="info-item">
-                            <span class="info-label">Próximo ID:</span>
-                            <span id="nextId" class="info-value">Cargando...</span>
+                            <span>Héroes:</span>
+                            <span id="totalHeroes">0</span>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Total Héroes:</span>
-                            <span id="totalHeroes" class="info-value">Cargando...</span>
+                            <span>Próximo ID:</span>
+                            <span id="nextId">1</span>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Status API:</span>
-                            <span id="apiStatusText" class="info-value status-ready">Conectando...</span>
+                            <span>Scraper:</span>
+                            <span class="status-active">Activo</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="recent-heroes">
-                    <h3><i class="fas fa-history"></i> Últimos Héroes Agregados</h3>
-                    <div id="recentList" class="recent-list">
-                        <p style="color: #666; text-align: center; padding: 20px;">Cargando héroes recientes...</p>
-                    </div>
-                </div>
-
-                <div class="export-section">
-                    <h3><i class="fas fa-file-export"></i> Exportar Datos</h3>
-                    <div class="export-actions">
-                        <button id="copyJsonBtn" class="btn btn-export">
-                            <i class="far fa-copy"></i> Copiar JSON
+                <div class="quick-actions">
+                    <h3><i class="fas fa-bolt"></i> Acciones Rápidas</h3>
+                    <div class="action-buttons">
+                        <button class="btn-action" data-id="127">
+                            <img src="https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_32c0d9d3a727a9052754296af6251435.png" alt="Layla">
+                            <span>Layla (127)</span>
                         </button>
-                        <button id="downloadBtn" class="btn btn-export">
-                            <i class="fas fa-download"></i> Descargar JSON
+                        <button class="btn-action" data-id="128">
+                            <img src="https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_32c0d9d3a727a9052754296af6251435.png" alt="Miya">
+                            <span>Miya (128)</span>
+                        </button>
+                        <button class="btn-action" data-id="129">
+                            <img src="https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_2a0606e575ae278db77134b50ccef7ac.png" alt="Zilong">
+                            <span>Zilong (129)</span>
                         </button>
                     </div>
-                </div>
-
-                <div class="instructions">
-                    <h3><i class="fas fa-question-circle"></i> Instrucciones</h3>
-                    <ul>
-                        <li><strong>ID:</strong> Se genera automáticamente</li>
-                        <li><strong>*</strong> Campos obligatorios</li>
-                        <li><strong>Roles/Iconos múltiples:</strong> Separar con comas</li>
-                        <li><strong>Habilidades:</strong> Exactamente 4 obligatorias</li>
-                        <li><strong>Win Rate:</strong> Formato: 49.5%</li>
-                        <li><strong>Atajos:</strong> Ctrl+E (Ejemplo), Ctrl+S (Guardar)</li>
-                    </ul>
                 </div>
             </aside>
         </div>
@@ -222,15 +185,6 @@
             <span id="notificationText"></span>
             <button class="close-notification">&times;</button>
         </div>
-
-        <footer class="footer">
-            <p>API Mobile Legends v1.0.0 | Panel de Administración</p>
-            <p>
-                <a href="https://github.com/SpAy2024/Api_ML" target="_blank">
-                    <i class="fab fa-github"></i> Ver en GitHub
-                </a>
-            </p>
-        </footer>
     </div>
 
     <script src="/admin-script.js"></script>
