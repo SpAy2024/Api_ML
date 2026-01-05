@@ -390,6 +390,38 @@ const heroes = [
       }
     ],
     "linea": ""
+  },
+  {
+    "id": 13,
+    "nombre": "Angela",
+    "rol": "Soporte",
+    "winRate": "50.09%",
+    "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_a815a3adad8df99481700c84abaf3c41.png",
+    "icon": "https://akmweb.youngjoygame.com/web/gms/image/1e4609b25a4cd63ee5a13015d4058159.png",
+    "guia": "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg3eAHDdUAADFksmeBKM965.jpg",
+    "skills": [
+      {
+        "nombre": "Aceleracion",
+        "descripcion": "Ayuda velocidad",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_a43559c89c118c816b669fa49b45e76f.png"
+      },
+      {
+        "nombre": "Curar",
+        "descripcion": "Curacion",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_6f7b56ae09ae397b07ad30d8c94164ae.png"
+      },
+      {
+        "nombre": "CC",
+        "descripcion": "Stun",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_0f32c780347021165ab869944f1c981c.png"
+      },
+      {
+        "nombre": "Escudo",
+        "descripcion": "escudo",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_d1c3f421da66e26aa3e0d8749f9f39de.png"
+      }
+    ],
+    "linea": ""
   }
 ];
 
