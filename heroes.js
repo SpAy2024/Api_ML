@@ -422,6 +422,38 @@ const heroes = [
       }
     ],
     "linea": ""
+  },
+  {
+    "id": 14,
+    "nombre": "Bruno",
+    "rol": "Tirador",
+    "winRate": "49.22%",
+    "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_68d7ca30f69cb691125e3f03cd782a53.png",
+    "icon": "https://akmweb.youngjoygame.com/web/gms/image/025c69a764924f4bac526a2662f1a0b9.png",
+    "guia": "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0yAKd3oAADPae3oEUg544.jpg",
+    "skills": [
+      {
+        "nombre": "Buff",
+        "descripcion": "Bruno obtiene un 2,5 % adicional de probabilidad crítica cada vez que inflige daño con sus habilidades (hasta 8 acumulaciones). Bruno tiene mayor ataque físico, pero solo obtiene un 80 % adicional de velocidad de ataque de todas las fuentes.",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_0850ac06412b0171aef0eba541581199.png"
+      },
+      {
+        "nombre": "Damage Slow",
+        "descripcion": "Bruno lanza una Powerball con su siguiente ataque básico, lo que inflige 100 (+100% Ataque Físico Total) de daño físico al objetivo, lo ralentiza un 30% y lo acelera un 30% durante 0,5 s. La Powerball rebota hacia Bruno y aterriza en el suelo. Él o sus héroes aliados pueden recuperar la Powerball para otro ataque y reducir el tiempo de reutilización de Placaje Volador en 1 s.",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_65a5b817dc5f53e082caa8c1def5a9ef.png"
+      },
+      {
+        "nombre": "Movilidad CC",
+        "descripcion": "runo realiza una barrida hacia el objetivo, infligiendo 140 (+40% Ataque Físico Total) de Daño Físico a los enemigos en su camino y aturdiéndolos durante 0,5 s. Si la Bola de Poder rebota, Bruno también la atrae hacia sí.",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_02cfbd7b97612b6aedb46d84a3186ce4.png"
+      },
+      {
+        "nombre": "Ráfaga CC",
+        "descripcion": "Bruno lanza su Bola de Energía al héroe enemigo objetivo, infligiendo 250 (+83% Ataque Físico Total) de Daño Físico y derribándolo. La Bola de Energía rebota entre enemigos cercanos hasta 10 veces, infligiendo cada vez 150 (+50% Ataque Físico Total) de Daño Físico . Cada golpe también reduce la Defensa Física del enemigo un 4% durante 8 s (hasta 3 acumulaciones).",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_0d4558404b2096ecbce8394de5ced030.png"
+      }
+    ],
+    "linea": ""
   }
 ];
 
