@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Héroes Mobile Legends</title>
+    <link rel="stylesheet" href="/admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-gamepad"></i> Panel de Administración - Héroes MLBB</h1>
+            <p class="subtitle">Agregar nuevos héroes al sistema</p>
+            <div class="api-info">
+                <a href="/" target="_blank" class="api-link">
+                    <i class="fas fa-code"></i> Ver API REST
+                </a>
+                <span class="api-status" id="apiStatus">
+                    <i class="fas fa-circle"></i> Conectado
+                </span>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <main class="main-content">
+                <div class="form-section">
+                    <h2><i class="fas fa-user-plus"></i> Agregar Nuevo Héroe</h2>
+                    
+                    <div class="form-container">
+                        <form id="heroForm">
+                            <div class="form-group">
+                                <label for="heroName">Nombre del Héroe *</label>
+                                <input type="text" id="heroName" required placeholder="Ej: Miya">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="heroRole">Rol(es) *</label>
+                                <div class="role-input-container">
+                                    <input type="text" id="heroRole" required placeholder="Ej: Tirador o Tirador,Asesino">
+                                    <small class="form-hint">Para múltiples roles, separar con coma (ej: Combatiente,Asesino)</small>
+                                </div>
+                                <div class="role-examples">
+                                    <span class="role-tag">Tirador</span>
+                                    <span class="role-tag">Asesino</span>
+                                    <span class="role-tag">Mago</span>
+                                    <span class="role-tag">Tanque</span>
+                                    <span class="role-tag">Combatiente</span>
+                                    <span class="role-tag">Soporte</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="winRate">Win Rate *</label>
+                                <input type="text" id="winRate" required placeholder="Ej: 49.5%">
+                                <small class="form-hint">Formato: número seguido de % (ej: 52.3%)</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="heroImage">URL de la imagen principal *</label>
+                                <input type="url" id="heroImage" required placeholder="https://akmweb.../imagen.png">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="iconImage">URL del icono *</label>
+                                <input type="url" id="iconImage" required placeholder="https://akmweb.../icono.png">
+                                <small class="form-hint">Para múltiples iconos, separar URLs con coma</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="guideImage">URL de la imagen de guía</label>
+                                <input type="url" id="guideImage" placeholder="https://img.mobilelegends.com/.../guia.jpg">
+                            </div>
+
+                            <div class="skills-section">
+                                <h3><i class="fas fa-bolt"></i> Habilidades (4 obligatorias)</h3>
+                                
+                                <div class="skill-group">
+                                    <h4>Habilidad 1</h4>
+                                    <div class="form-group">
+                                        <label for="skill1Name">Nombre *</label>
+                                        <input type="text" id="skill1Name" required placeholder="Ej: Buff">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="skill1Desc">Descripción *</label>
+                                        <textarea id="skill1Desc" required rows="3" placeholder="Descripción de la habilidad..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="skill1Image">URL de la imagen *</label>
+                                        <input type="url" id="skill1Image" required placeholder="https://akmweb.../skill1.png">
+                                    </div>
+                                </div>
+
+                                <div class="skill-group">
+                                    <h4>Habilidad 2</h4>
+                                    <div class="form-group">
+                                        <label for="skill2Name">Nombre *</label>
+                                        <input type="text" id="skill2Name" required placeholder="Ej: AOE">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="skill2Desc">Descripción *</label>
+                                        <textarea id="skill2Desc" required rows="3" placeholder="Descripción de la habilidad..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="skill2Image">URL de la imagen *</label>
+                                        <input type="url" id="skill2Image" required placeholder="https://akmweb.../skill2.png">
+                                    </div>
+                                </div>
+
+                                <div class="skill-group">
+                                    <h4>Habilidad 3</h4>
+                                    <div class="form-group">
+                                        <label for="skill3Name">Nombre *</label>
+                                        <input type="text" id="skill3Name" required placeholder="Ej: CC">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="skill3Desc">Descripción *</label>
+                                        <textarea id="skill3Desc" required rows="3" placeholder="Descripción de la habilidad..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="skill3Image">URL de la imagen *</label>
+                                        <input type="url" id="skill3Image" required placeholder="https://akmweb.../skill3.png">
+                                    </div>
+                                </div>
+
+                                <div class="skill-group">
+                                    <h4>Habilidad 4 (Ultimate)</h4>
+                                    <div class="form-group">
+                                        <label for="skill4Name">Nombre *</label>
+                                        <input type="text" id="skill4Name" required placeholder="Ej: Daño explosivo">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="skill4Desc">Descripción *</label>
+                                        <textarea id="skill4Desc" required rows="3" placeholder="Descripción de la habilidad..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="skill4Image">URL de la imagen *</label>
+                                        <input type="url" id="skill4Image" required placeholder="https://akmweb.../skill4.png">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="saveBtn">
+                                    <i class="fas fa-save"></i> Guardar Héroe
+                                </button>
+                                <button type="button" id="resetBtn" class="btn btn-secondary">
+                                    <i class="fas fa-redo"></i> Limpiar Formulario
+                                </button>
+                                <button type="button" id="exampleBtn" class="btn btn-example">
+                                    <i class="fas fa-magic"></i> Cargar Ejemplo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <h2><i class="fas fa-eye"></i> Vista Previa</h2>
+                    <div class="preview-container">
+                        <div id="heroPreview" class="hero-preview">
+                            <!-- La vista previa se cargará aquí -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="sidebar">
+                <div class="info-panel">
+                    <h3><i class="fas fa-info-circle"></i> Información del Sistema</h3>
+                    
+                    <div class="info-card">
+                        <div class="info-item">
+                            <span class="info-label">Próximo ID:</span>
+                            <span id="nextId" class="info-value">Cargando...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Total Héroes:</span>
+                            <span id="totalHeroes" class="info-value">Cargando...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Status API:</span>
+                            <span id="apiStatusText" class="info-value status-ready">Conectando...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-heroes">
+                    <h3><i class="fas fa-history"></i> Últimos Héroes Agregados</h3>
+                    <div id="recentList" class="recent-list">
+                        <p style="color: #666; text-align: center; padding: 20px;">Cargando héroes recientes...</p>
+                    </div>
+                </div>
+
+                <div class="export-section">
+                    <h3><i class="fas fa-file-export"></i> Exportar Datos</h3>
+                    <div class="export-actions">
+                        <button id="copyJsonBtn" class="btn btn-export">
+                            <i class="far fa-copy"></i> Copiar JSON
+                        </button>
+                        <button id="downloadBtn" class="btn btn-export">
+                            <i class="fas fa-download"></i> Descargar JSON
+                        </button>
+                    </div>
+                </div>
+
+                <div class="instructions">
+                    <h3><i class="fas fa-question-circle"></i> Instrucciones</h3>
+                    <ul>
+                        <li><strong>ID:</strong> Se genera automáticamente</li>
+                        <li><strong>*</strong> Campos obligatorios</li>
+                        <li><strong>Roles/Iconos múltiples:</strong> Separar con comas</li>
+                        <li><strong>Habilidades:</strong> Exactamente 4 obligatorias</li>
+                        <li><strong>Win Rate:</strong> Formato: 49.5%</li>
+                        <li><strong>Atajos:</strong> Ctrl+E (Ejemplo), Ctrl+S (Guardar)</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+
+        <div id="notification" class="notification">
+            <span id="notificationText"></span>
+            <button class="close-notification">&times;</button>
+        </div>
+
+        <footer class="footer">
+            <p>API Mobile Legends v1.0.0 | Panel de Administración</p>
+            <p>
+                <a href="https://github.com/SpAy2024/Api_ML" target="_blank">
+                    <i class="fab fa-github"></i> Ver en GitHub
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="/admin-script.js"></script>
+</body>
+</html>
