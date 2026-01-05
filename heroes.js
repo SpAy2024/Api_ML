@@ -518,6 +518,38 @@ const heroes = [
       }
     ],
     "linea": ""
+  },
+  {
+    "id": 17,
+    "nombre": "Eudora",
+    "rol": "Mago",
+    "winRate": "48.65%",
+    "imagen": "https://wsrv.nl/?url=https://akmweb.youngjoygame.com/web/svnres/file/mlbb/homepage/100_495f8e41a10d75d893f13e24ae97846a.jpg",
+    "icon": "https://akmweb.youngjoygame.com/web/gms/image/1c6985dd0caec2028ccb6d1b8ca95e0f.png",
+    "guia": "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0yALFmYAACw4ypCVRg625.jpg",
+    "skills": [
+      {
+        "nombre": "Buff",
+        "descripcion": "Superconductor",
+        "imagen": "https://liquipedia.net/commons/images/thumb/0/0d/Eudora_Superconductor.png/64px-Eudora_Superconductor.png"
+      },
+      {
+        "nombre": "Área de efecto",
+        "descripcion": "Relámpago bifurcado",
+        "imagen": "https://liquipedia.net/commons/images/thumb/5/56/Eudora_Forked_Lightning.png/64px-Eudora_Forked_Lightning.png"
+      },
+      {
+        "nombre": "Daños CC",
+        "descripcion": "Rayo globular",
+        "imagen": "https://liquipedia.net/commons/images/thumb/f/f1/Eudora_Ball_Lightning.png/64px-Eudora_Ball_Lightning.png"
+      },
+      {
+        "nombre": "Explosión",
+        "descripcion": "La ira del trueno",
+        "imagen": "https://liquipedia.net/commons/images/thumb/8/88/Eudora_Thunder%27s_Wrath.png/64px-Eudora_Thunder%27s_Wrath.png"
+      }
+    ],
+    "linea": ""
   }
 ];
 
