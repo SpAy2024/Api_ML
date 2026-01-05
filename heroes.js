@@ -550,6 +550,44 @@ const heroes = [
       }
     ],
     "linea": ""
+  },
+  {
+    "id": 18,
+    "nombre": "Zilong",
+    "rol": [
+      "Combatiente",
+      "Asesino"
+    ],
+    "winRate": "47.17%",
+    "imagen": "https://wsrv.nl/?url=https://akmweb.youngjoygame.com/web/svnres/file/mlbb/homepage/100_90df181873c42df22049aa056662a934.jpg",
+    "icon": [
+      "https://akmweb.youngjoygame.com/web/gms/image/629e282165d4b63deceaf350426ea440.png",
+      "https://akmweb.youngjoygame.com/web/gms/image/d0b8b65a47fc43dc7bb2bac447072fd2.png"
+    ],
+    "guia": "",
+    "skills": [
+      {
+        "nombre": "Mejora de curación",
+        "descripcion": "Aluvión de dragones",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_588b6273f7a0153bebe86f7ed6bb7e18.png"
+      },
+      {
+        "nombre": "Daños CC",
+        "descripcion": "Lanza volteada",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_effcecb9dba41aa5fa1c34edad4d7e17.png"
+      },
+      {
+        "nombre": "Desventaja de movilidad",
+        "descripcion": "Golpe de lanza",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_61e9af7beef08d70233d34f98cafb3e3.png"
+      },
+      {
+        "nombre": "Mejora de aceleración",
+        "descripcion": "Guerrero Supremo",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_ed8776fe35d9d7b2db410549e95759cd.png"
+      }
+    ],
+    "linea": ""
   }
 ];
 
