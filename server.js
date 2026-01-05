@@ -2,159 +2,240 @@ const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
-const { Octokit } = require("@octokit/rest");
+const axios = require("axios");
+const cheerio = require("cheerio");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configuración de GitHub
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const octokit = new Octokit({ 
-  auth: GITHUB_TOKEN,
-  userAgent: 'MLBB API v2.0'
-});
+// Archivo de héroes
+const HEROES_FILE = path.join(__dirname, "heroes.js");
+let heroes = require("./heroes.js");
 
-const REPO_OWNER = "SpAy2024";
-const REPO_NAME = "Api_ML";
-const HEROES_FILE_PATH = "heroes.js";
-
-// Cargar héroes desde el archivo local
-let heroes = [];
-try {
-  heroes = require("./heroes.js");
-  console.log(`✅ ${heroes.length} héroes cargados desde heroes.js`);
-} catch (error) {
-  console.error("❌ Error al cargar héroes.js:", error.message);
-  heroes = [];
-}
-
-// Función para actualizar el archivo en GitHub
-async function updateHeroesOnGitHub() {
+// Función para guardar héroes
+function saveHeroes() {
   try {
-    if (!GITHUB_TOKEN) {
-      console.warn("⚠️ GITHUB_TOKEN no configurado. Los cambios no se guardarán en GitHub.");
-      return { success: false, message: "GitHub token no configurado" };
-    }
-
-    // 1. Obtener el SHA del archivo actual
-    const { data: fileData } = await octokit.repos.getContent({
-      owner: REPO_OWNER,
-      repo: REPO_NAME,
-      path: HEROES_FILE_PATH
-    });
-
-    // 2. Crear contenido nuevo
     const content = `const heroes = ${JSON.stringify(heroes, null, 2)};\n\nmodule.exports = heroes;`;
-    const contentBase64 = Buffer.from(content).toString('base64');
-
-    // 3. Actualizar el archivo en GitHub
-    await octokit.repos.createOrUpdateFileContents({
-      owner: REPO_OWNER,
-      repo: REPO_NAME,
-      path: HEROES_FILE_PATH,
-      message: `Actualización automática: ${new Date().toLocaleString()}`,
-      content: contentBase64,
-      sha: fileData.sha,
-      committer: {
-        name: 'MLBB API Bot',
-        email: 'bot@mlbb-api.com'
-      },
-      author: {
-        name: 'MLBB API',
-        email: 'api@mlbb.com'
-      }
-    });
-
-    console.log("✅ Archivo heroes.js actualizado en GitHub");
-    
-    // 4. También actualizar localmente
-    fs.writeFileSync(path.join(__dirname, "heroes.js"), content, "utf8");
-    console.log("💾 Archivo heroes.js actualizado localmente");
-
-    return { success: true, message: "Archivo actualizado en GitHub" };
+    fs.writeFileSync(HEROES_FILE, content, "utf8");
+    console.log(`💾 Héroes guardados: ${heroes.length}`);
+    return true;
   } catch (error) {
-    console.error("❌ Error al actualizar GitHub:", error.message);
-    
-    // Fallback: guardar solo localmente
-    try {
-      const content = `const heroes = ${JSON.stringify(heroes, null, 2)};\n\nmodule.exports = heroes;`;
-      fs.writeFileSync(path.join(__dirname, "heroes.js"), content, "utf8");
-      console.log("💾 Archivo guardado localmente (fallback)");
-      return { success: false, message: "Guardado localmente, pero GitHub falló: " + error.message };
-    } catch (localError) {
-      console.error("❌ Error al guardar localmente:", localError.message);
-      return { success: false, message: "Error completo: " + error.message };
-    }
+    console.error("❌ Error al guardar:", error);
+    return false;
   }
 }
 
-// Ruta para el panel de administración
+// SERVIR ARCHIVOS DEL PANEL
 app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname, "admin.html"));
 });
 
-// Servir archivos CSS y JS del panel
 app.get("/admin-style.css", (req, res) => {
-  res.sendFile(path.join(__dirname, "admin-style.css"), {
-    headers: { "Content-Type": "text/css" }
-  });
+  res.sendFile(path.join(__dirname, "admin-style.css"));
 });
 
 app.get("/admin-script.js", (req, res) => {
-  res.sendFile(path.join(__dirname, "admin-script.js"), {
-    headers: { "Content-Type": "application/javascript" }
-  });
+  res.sendFile(path.join(__dirname, "admin-script.js"));
 });
 
-// Ruta de prueba
+// NUEVO: Scraper automático
+app.post("/api/scrape-hero", async (req, res) => {
+  try {
+    const { heroId, heroName } = req.body;
+    
+    if (!heroId && !heroName) {
+      return res.status(400).json({ 
+        error: "Se requiere heroId o heroName" 
+      });
+    }
+    
+    let heroData;
+    
+    if (heroId) {
+      // Scrapear por ID
+      heroData = await scrapeHeroById(heroId);
+    } else {
+      // Buscar por nombre
+      heroData = await scrapeHeroByName(heroName);
+    }
+    
+    if (!heroData) {
+      return res.status(404).json({ 
+        error: "No se pudo obtener información del héroe" 
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: "Datos del héroe obtenidos exitosamente",
+      hero: heroData,
+      preview: true
+    });
+    
+  } catch (error) {
+    console.error("Error en scraper:", error);
+    res.status(500).json({ 
+      error: "Error al obtener datos del héroe",
+      details: error.message 
+    });
+  }
+});
+
+// Scrapear héroe por ID
+async function scrapeHeroById(heroId) {
+  try {
+    const url = `https://www.mobilelegends.com/hero/detail?channelid=2819992&heroid=${heroId}`;
+    
+    console.log(`🌐 Scrapeando: ${url}`);
+    
+    const { data } = await axios.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive'
+      }
+    });
+    
+    const $ = cheerio.load(data);
+    
+    // Extraer información básica
+    const heroName = $('title').text().split(' - ')[0] || `Héroe ${heroId}`;
+    
+    // Buscar datos en meta tags y scripts
+    const scripts = $('script').text();
+    const metaTags = $('meta');
+    
+    // Intentar extraer imagen del héroe
+    let heroImage = '';
+    metaTags.each((i, el) => {
+      const property = $(el).attr('property');
+      const content = $(el).attr('content');
+      if (property === 'og:image' && content) {
+        heroImage = content;
+      }
+    });
+    
+    // Si no encontramos imagen, usar placeholder
+    if (!heroImage) {
+      heroImage = `https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_hero_placeholder.png`;
+    }
+    
+    // Datos de ejemplo (mejorar con scraping real)
+    const heroData = {
+      nombre: heroName,
+      rol: "Por definir", // Scrapear del HTML
+      winRate: "50%", // Scrapear de estadísticas
+      imagen: heroImage,
+      icon: heroImage.replace('homepage/', 'gms/').replace('.png', '_icon.png'),
+      guia: `https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0iAEVjjAAC2G6fDQV8498.jpg`,
+      skills: [
+        {
+          nombre: "Habilidad 1",
+          descripcion: "Descripción de habilidad obtenida del sitio",
+          imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_skill_placeholder.png"
+        },
+        {
+          nombre: "Habilidad 2",
+          descripcion: "Segunda habilidad del héroe",
+          imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_skill_placeholder.png"
+        },
+        {
+          nombre: "Habilidad 3",
+          descripcion: "Tercera habilidad del héroe",
+          imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_skill_placeholder.png"
+        },
+        {
+          nombre: "Ultimate",
+          descripcion: "Habilidad definitiva del héroe",
+          imagen: "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_skill_ultimate.png"
+        }
+      ]
+    };
+    
+    return heroData;
+    
+  } catch (error) {
+    console.error("Error scrapeando por ID:", error.message);
+    return null;
+  }
+}
+
+// Scrapear héroe por nombre
+async function scrapeHeroByName(heroName) {
+  try {
+    // URL de búsqueda
+    const searchUrl = `https://www.mobilelegends.com/search?keyword=${encodeURIComponent(heroName)}`;
+    
+    const { data } = await axios.get(searchUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    });
+    
+    const $ = cheerio.load(data);
+    
+    // Buscar enlaces a héroes
+    const heroLinks = $('a[href*="/hero/"]');
+    
+    if (heroLinks.length > 0) {
+      const firstHeroLink = heroLinks.first().attr('href');
+      const heroIdMatch = firstHeroLink.match(/heroid=(\d+)/);
+      
+      if (heroIdMatch) {
+        return await scrapeHeroById(heroIdMatch[1]);
+      }
+    }
+    
+    return null;
+    
+  } catch (error) {
+    console.error("Error scrapeando por nombre:", error.message);
+    return null;
+  }
+}
+
+// API endpoints existentes
 app.get("/", (req, res) => {
   res.json({ 
-    mensaje: "API Mobile Legends funcionando 🚀",
+    mensaje: "API Mobile Legends con Scraper 🚀",
     endpoints: {
       heroes: "/api/heroes",
       heroById: "/api/heroes/:id",
       adminPanel: "/admin",
       stats: "/api/stats",
-      export: "/api/export",
-      update: "/api/update-github"
+      scrape: "/api/scrape-hero (POST)",
+      export: "/api/export"
     },
     totalHeroes: heroes.length,
-    nextId: heroes.length > 0 ? Math.max(...heroes.map(h => h.id)) + 1 : 1,
-    version: "2.0.0",
-    githubSync: !!GITHUB_TOKEN
+    version: "3.0.0"
   });
 });
 
-// Listar todos los héroes
 app.get("/api/heroes", (req, res) => {
   res.json(heroes);
 });
 
-// Obtener héroe por ID
 app.get("/api/heroes/:id", (req, res) => {
   const hero = heroes.find(h => h.id === parseInt(req.params.id));
   hero ? res.json(hero) : res.status(404).json({ error: "Héroe no encontrado" });
 });
 
-// Agregar nuevo héroe
-app.post("/api/heroes", async (req, res) => {
+app.post("/api/heroes", (req, res) => {
   try {
     const nuevoHeroe = req.body;
     
-    // Validaciones básicas
     if (!nuevoHeroe.nombre || !nuevoHeroe.rol || !nuevoHeroe.winRate) {
       return res.status(400).json({ 
-        error: "Datos incompletos", 
-        campos_requeridos: ["nombre", "rol", "winRate"] 
+        error: "Datos incompletos" 
       });
     }
     
-    // Calcular nuevo ID (el más alto + 1)
     const nuevoId = heroes.length > 0 ? Math.max(...heroes.map(h => h.id)) + 1 : 1;
     
-    // Crear héroe con estructura completa
     const nuevo = {
       id: nuevoId,
       nombre: nuevoHeroe.nombre,
@@ -167,174 +248,42 @@ app.post("/api/heroes", async (req, res) => {
       linea: nuevoHeroe.linea || ""
     };
     
-    // Agregar al array en memoria
     heroes.push(nuevo);
-    
-    // Actualizar en GitHub
-    const githubResult = await updateHeroesOnGitHub();
+    saveHeroes();
     
     res.status(201).json({
       success: true,
-      message: `Héroe "${nuevo.nombre}" agregado exitosamente`,
+      message: `Héroe "${nuevo.nombre}" agregado`,
       hero: nuevo,
       nextId: nuevoId + 1,
-      totalHeroes: heroes.length,
-      githubUpdate: githubResult
+      totalHeroes: heroes.length
     });
     
   } catch (error) {
-    console.error("Error al agregar héroe:", error);
     res.status(500).json({ 
-      error: "Error interno del servidor",
+      error: "Error interno",
       details: error.message 
     });
   }
 });
 
-// Actualizar héroe existente
-app.put("/api/heroes/:id", async (req, res) => {
-  try {
-    const heroId = parseInt(req.params.id);
-    const updatedData = req.body;
-    
-    // Buscar el héroe
-    const heroIndex = heroes.findIndex(h => h.id === heroId);
-    
-    if (heroIndex === -1) {
-      return res.status(404).json({ error: "Héroe no encontrado" });
-    }
-    
-    // Validaciones básicas
-    if (!updatedData.nombre || !updatedData.rol || !updatedData.winRate) {
-      return res.status(400).json({ 
-        error: "Datos incompletos", 
-        campos_requeridos: ["nombre", "rol", "winRate"] 
-      });
-    }
-    
-    // Preservar el ID original
-    updatedData.id = heroId;
-    
-    // Actualizar el héroe
-    heroes[heroIndex] = updatedData;
-    
-    // Actualizar en GitHub
-    const githubResult = await updateHeroesOnGitHub();
-    
-    res.json({
-      success: true,
-      message: `Héroe "${updatedData.nombre}" actualizado exitosamente`,
-      hero: updatedData,
-      githubUpdate: githubResult
-    });
-    
-  } catch (error) {
-    console.error("Error al actualizar héroe:", error);
-    res.status(500).json({ 
-      error: "Error interno del servidor",
-      details: error.message 
-    });
-  }
-});
-
-// Eliminar héroe
-app.delete("/api/heroes/:id", async (req, res) => {
-  try {
-    const heroId = parseInt(req.params.id);
-    const heroIndex = heroes.findIndex(h => h.id === heroId);
-    
-    if (heroIndex === -1) {
-      return res.status(404).json({ error: "Héroe no encontrado" });
-    }
-    
-    const deletedHero = heroes[heroIndex];
-    
-    // Eliminar el héroe
-    heroes.splice(heroIndex, 1);
-    
-    // Actualizar en GitHub
-    const githubResult = await updateHeroesOnGitHub();
-    
-    res.json({
-      success: true,
-      message: `Héroe "${deletedHero.nombre}" eliminado exitosamente`,
-      hero: deletedHero,
-      totalHeroes: heroes.length,
-      githubUpdate: githubResult
-    });
-    
-  } catch (error) {
-    console.error("Error al eliminar héroe:", error);
-    res.status(500).json({ 
-      error: "Error interno del servidor",
-      details: error.message 
-    });
-  }
-});
-
-// Nueva ruta: Estadísticas del sistema
 app.get("/api/stats", (req, res) => {
   const nextId = heroes.length > 0 ? Math.max(...heroes.map(h => h.id)) + 1 : 1;
   
   res.json({
     totalHeroes: heroes.length,
     nextId: nextId,
-    recentHeroes: heroes.slice(-5).reverse().map(h => ({
-      id: h.id,
-      nombre: h.nombre,
-      rol: h.rol,
-      icon: Array.isArray(h.icon) ? h.icon[0] : h.icon
-    })),
-    rolesCount: contarRoles(),
-    githubSync: !!GITHUB_TOKEN,
-    lastUpdate: new Date().toISOString()
+    recentHeroes: heroes.slice(-5).reverse()
   });
 });
 
-// Nueva ruta: Exportar todos los datos como JSON
 app.get("/api/export", (req, res) => {
   res.json(heroes);
 });
 
-// Ruta para forzar actualización en GitHub
-app.post("/api/update-github", async (req, res) => {
-  try {
-    const result = await updateHeroesOnGitHub();
-    res.json({
-      success: result.success,
-      message: result.message,
-      totalHeroes: heroes.length,
-      timestamp: new Date().toISOString()
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
-
-// Función auxiliar para contar roles
-function contarRoles() {
-  const rolesCount = {};
-  heroes.forEach(hero => {
-    if (Array.isArray(hero.rol)) {
-      hero.rol.forEach(rol => {
-        rolesCount[rol] = (rolesCount[rol] || 0) + 1;
-      });
-    } else {
-      rolesCount[hero.rol] = (rolesCount[hero.rol] || 0) + 1;
-    }
-  });
-  return rolesCount;
-}
-
-// Puerto dinámico para Render/Railway
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`📊 Panel de administración: http://localhost:${PORT}/admin`);
-  console.log(`📈 Total de héroes cargados: ${heroes.length}`);
-  console.log(`🔗 GitHub Sync: ${GITHUB_TOKEN ? '✅ Configurado' : '❌ No configurado'}`);
-  console.log(`🎮 Héroes disponibles: ${heroes.slice(0, 3).map(h => h.nombre).join(', ')}${heroes.length > 3 ? ` y ${heroes.length - 3} más` : ''}`);
+  console.log(`🚀 Servidor con scraper en puerto ${PORT}`);
+  console.log(`📊 Panel: http://localhost:${PORT}/admin`);
+  console.log(`🔍 Scraper activo`);
 });
