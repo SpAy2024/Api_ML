@@ -486,6 +486,38 @@ const heroes = [
       }
     ],
     "linea": ""
+  },
+  {
+    "id": 16,
+    "nombre": "Rafaela",
+    "rol": "Soporte",
+    "winRate": "52.90%",
+    "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_f22e22659e8b1acfb665aec8eaffabd7.png",
+    "icon": "https://akmweb.youngjoygame.com/web/gms/image/1e4609b25a4cd63ee5a13015d4058159.png",
+    "guia": "https://akmweb.youngjoygame.com/web/gms/image/4d4816281eb666ffc6e00d77e047578b.jpg",
+    "skills": [
+      {
+        "nombre": "Buff",
+        "descripcion": "Rafaela puede lanzar una habilidad especial cada 40 s. Tras canalizar durante 2,5 s, resucita instantáneamente a un aliado y aumenta su velocidad de movimiento un 30 % durante 5 s (recibir daño de héroes y criaturas legendarias interrumpe la canalización y activa el tiempo de reutilización base de la habilidad). El tiempo de reutilización de esta habilidad aumenta un 500 % del tiempo de reaparición restante del objetivo, con un límite de 240 s. Esta habilidad no se ve afectada por la reducción de tiempo de reutilización.",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_2_1_18/100_eb33edd56da79e4dbe8601648e2cb07a.png"
+      },
+      {
+        "nombre": "AOE lento",
+        "descripcion": "Rafaela golpea a los tres enemigos más cercanos con Luz de Retribución , infligiéndoles 225 (+120% Poder Mágico Total) de Daño Mágico , revelando brevemente su posición y ralentizándolos un 40% durante 1,5 s. Los enemigos impactados por Luz de Retribución nuevamente en 6 s recibirán un 20% de daño adicional (este efecto se acumula hasta 3 veces).",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e3672153fbf1dbeb4a98243958f9deb7.png"
+      },
+      {
+        "nombre": "Aceleración de curación",
+        "descripcion": "Rafaela invoca Luz Sagrada , lo que recupera 100 (+35% Poder Mágico Total) de PV para los héroes aliados cercanos, además de 150 (+65% Poder Mágico Total) de PV adicionales para ella y el héroe aliado más herido dentro del alcance. También aumenta la Velocidad de Movimiento de los héroes aliados cercanos en un 30% y otorga Inmunidad a la Ralentización durante 1 s. Cada 10 puntos de Poder Mágico añadirán un 1% a la bonificación de Velocidad de Movimiento.",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_a4ce274e4ea7ccb436e0adfec05457aa.png"
+      },
+      {
+        "nombre": "CC AOE",
+        "descripcion": "Rafaela libera el verdadero poder de la Luz Sagrada en la dirección objetivo, infligiendo 460 (+120% Poder Mágico Total) de Daño Mágico a los enemigos en una línea y aturdiéndolos durante 1,2 s.",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_70f534ce6bfaa6640646551419211d4c.png"
+      }
+    ],
+    "linea": ""
   }
 ];
 
