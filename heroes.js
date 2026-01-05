@@ -454,6 +454,38 @@ const heroes = [
       }
     ],
     "linea": ""
+  },
+  {
+    "id": 15,
+    "nombre": "Clint",
+    "rol": "Tirador",
+    "winRate": "51.65%",
+    "imagen": "https://wsrv.nl/?url=https://akmweb.youngjoygame.com/web/svnres/file/mlbb/homepage/100_8136b5ece3387dfe347956f797a14a5d.jpg",
+    "icon": "https://akmweb.youngjoygame.com/web/gms/image/025c69a764924f4bac526a2662f1a0b9.png",
+    "guia": "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0yAMsUgAADC3dAPsuU674.jpg",
+    "skills": [
+      {
+        "nombre": "Explosión",
+        "descripcion": "Tras cada lanzamiento de habilidad, el siguiente ataque básico de Clint en 4 s penetra una línea de enemigos e inflige 150 (+100 % de ataque físico total) de daño físico . Este daño puede activar efectos de ataque, y la parte afectada por el ataque físico puede infligir daño crítico.",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_4f34f91aa8c276c6c68c0fb062645591.png"
+      },
+      {
+        "nombre": "Área de efecto",
+        "descripcion": "Clint dispara 5 balas en rápida sucesión hacia el objetivo, cada una infligiendo 250 (+85% Ataque Físico Total) de Daño Físico al enemigo alcanzado. Las balas se distribuyen uniformemente entre los enemigos en un área en abanico. Los enemigos alcanzados por varias balas recibirán menos daño después de la primera.",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_819bd2b4fce66ea402874193cd70b190.png"
+      },
+      {
+        "nombre": "Movilidad CC",
+        "descripcion": "Clint lanza una red trampa hacia el objetivo, saltando ligeramente hacia atrás e infligiendo 140 (+30% Ataque Físico Total) (+150% Poder Mágico Total) de Daño Físico al primer enemigo impactado, inmovilizándolo durante 1,2 s. Al impactar con éxito a un enemigo, el tiempo de reutilización de esta habilidad se reduce en un 40%.",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_6813ebabb3e000e3af1935d16faa8f5b.png"
+      },
+      {
+        "nombre": "AOE lento",
+        "descripcion": "Clint lanza una granada hacia el objetivo que explota al primer enemigo impactado, infligiendo 280 (+100% Ataque Físico Total) de Daño Físico y ralentizándolo un 50% durante 0,5 s. Clint obtiene una carga de granada cada 10 s (hasta 3).",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_144f654bbb1560ed883a8f21b11f8a9d.png"
+      }
+    ],
+    "linea": ""
   }
 ];
 
