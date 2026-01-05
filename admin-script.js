@@ -1,54 +1,79 @@
-// API BASE URL
-const API_BASE = window.location.origin;
+// CONFIGURACIÓN
+const API_URL = window.location.origin;
 const API_ENDPOINTS = {
-    heroes: `${API_BASE}/api/heroes`,
-    stats: `${API_BASE}/api/stats`,
-    scrape: `${API_BASE}/api/scrape-hero`
+    heroes: `${API_URL}/api/heroes`,
+    stats: `${API_URL}/api/stats`
 };
 
-// Estado
+// ESTADO
 let appState = {
-    totalHeroes: 0,
+    heroes: [],
     nextId: 1,
+    totalHeroes: 0,
     currentHero: null,
-    isScraping: false
+    isEditing: false
 };
 
-// Elementos
+// CACHE DE ELEMENTOS
 const elements = {
-    // Scraper
-    heroIdInput: document.getElementById('heroIdInput'),
-    heroNameInput: document.getElementById('heroNameInput'),
-    scrapeByIdBtn: document.getElementById('scrapeByIdBtn'),
-    scrapeByNameBtn: document.getElementById('scrapeByNameBtn'),
-    scraperResults: document.getElementById('scraperResults'),
-    
     // Formulario
     form: document.getElementById('heroForm'),
+    heroId: document.getElementById('heroId'),
     heroName: document.getElementById('heroName'),
     heroRole: document.getElementById('heroRole'),
     winRate: document.getElementById('winRate'),
+    linea: document.getElementById('linea'),
     heroImage: document.getElementById('heroImage'),
     iconImage: document.getElementById('iconImage'),
+    guideImage: document.getElementById('guideImage'),
+    skillsContainer: document.getElementById('skillsContainer'),
     
-    // Info
+    // Botones
+    saveBtn: document.getElementById('saveBtn'),
+    clearBtn: document.getElementById('clearBtn'),
+    autoFillBtn: document.getElementById('autoFillBtn'),
+    refreshStatsBtn: document.getElementById('refreshStatsBtn'),
+    exportBtn: document.getElementById('exportBtn'),
+    backupBtn: document.getElementById('backupBtn'),
+    deleteAllBtn: document.getElementById('deleteAllBtn'),
+    
+    // Visualización
+    previewContainer: document.getElementById('previewContainer'),
+    heroesList: document.getElementById('heroesList'),
     totalHeroes: document.getElementById('totalHeroes'),
-    nextId: document.getElementById('nextId')
+    nextId: document.getElementById('nextId'),
+    notification: document.getElementById('notification'),
+    notificationText: document.getElementById('notificationText')
 };
 
-// Inicialización
+// ========== FUNCIONES PRINCIPALES ==========
+
+// INICIALIZAR
 async function init() {
+    console.log('🚀 Iniciando panel admin...');
+    
+    // Cargar datos iniciales
     await loadStats();
+    await loadHeroes();
+    
+    // Configurar eventos
     setupEventListeners();
     
-    // Cargar habilidades dinámicamente
-    loadSkillsFields();
+    // Generar campos de habilidades
+    generateSkillsFields();
+    
+    // Configurar preview en tiempo real
+    setupRealTimePreview();
+    
+    showNotification('✅ Panel listo para usar!', 'success');
 }
 
-// Cargar estadísticas
+// CARGAR ESTADÍSTICAS
 async function loadStats() {
     try {
         const response = await fetch(API_ENDPOINTS.stats);
+        if (!response.ok) throw new Error('Error cargando stats');
+        
         const data = await response.json();
         
         appState.totalHeroes = data.totalHeroes;
@@ -58,220 +83,463 @@ async function loadStats() {
         elements.nextId.textContent = data.nextId;
         
     } catch (error) {
-        console.error('Error cargando stats:', error);
+        console.error('Error stats:', error);
+        showNotification('⚠️ Error cargando estadísticas', 'warning');
     }
 }
 
-// Setup listeners
-function setupEventListeners() {
-    // Scraper
-    if (elements.scrapeByIdBtn) {
-        elements.scrapeByIdBtn.addEventListener('click', scrapeById);
-    }
-    
-    if (elements.scrapeByNameBtn) {
-        elements.scrapeByNameBtn.addEventListener('click', scrapeByName);
-    }
-    
-    // Tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tabId = btn.dataset.tab;
-            switchTab(tabId);
-        });
-    });
-    
-    // Quick actions
-    document.querySelectorAll('.btn-action').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const heroId = btn.dataset.id;
-            elements.heroIdInput.value = heroId;
-            switchTab('by-id');
-            scrapeById();
-        });
-    });
-}
-
-// Scraping por ID
-async function scrapeById() {
-    const heroId = elements.heroIdInput?.value.trim();
-    
-    if (!heroId) {
-        showNotification('Ingresa un ID de héroe', 'error');
-        return;
-    }
-    
-    await scrapeHero({ heroId });
-}
-
-// Scraping por nombre
-async function scrapeByName() {
-    const heroName = elements.heroNameInput?.value.trim();
-    
-    if (!heroName) {
-        showNotification('Ingresa un nombre de héroe', 'error');
-        return;
-    }
-    
-    await scrapeHero({ heroName });
-}
-
-// Función principal de scraping
-async function scrapeHero(data) {
+// CARGAR HÉROES
+async function loadHeroes() {
     try {
-        setScraping(true);
+        const response = await fetch(API_ENDPOINTS.heroes);
+        if (!response.ok) throw new Error('Error cargando héroes');
         
-        const response = await fetch(API_ENDPOINTS.scrape, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        
-        const result = await response.json();
-        
-        if (response.ok) {
-            displayScrapedData(result.hero);
-            fillFormWithData(result.hero);
-            showNotification('¡Datos obtenidos exitosamente!', 'success');
-        } else {
-            showNotification(result.error || 'Error al obtener datos', 'error');
-        }
+        appState.heroes = await response.json();
+        renderHeroesList();
         
     } catch (error) {
-        console.error('Error en scraping:', error);
-        showNotification('Error de conexión', 'error');
-    } finally {
-        setScraping(false);
+        console.error('Error héroes:', error);
+        showNotification('⚠️ Error cargando lista de héroes', 'warning');
     }
 }
 
-// Mostrar datos scrapeados
-function displayScrapedData(hero) {
-    if (!elements.scraperResults) return;
+// RENDERIZAR LISTA DE HÉROES
+function renderHeroesList() {
+    if (!elements.heroesList) return;
     
-    elements.scraperResults.innerHTML = `
-        <div class="scraped-hero-card">
-            <div class="scraped-header">
-                <img src="${hero.imagen || 'https://via.placeholder.com/100x100'}" 
-                     alt="${hero.nombre}"
-                     class="scraped-avatar">
-                <div class="scraped-info">
-                    <h3>${hero.nombre}</h3>
-                    <div class="scraped-role">${hero.rol}</div>
-                    <div class="scraped-winrate">${hero.winRate}</div>
-                </div>
+    if (appState.heroes.length === 0) {
+        elements.heroesList.innerHTML = `
+            <div style="text-align: center; padding: 30px; color: #aaa;">
+                <i class="fas fa-user-slash" style="font-size: 2rem; margin-bottom: 15px;"></i>
+                <p>No hay héroes registrados</p>
             </div>
-            
-            <div class="scraped-skills">
-                <h4>Habilidades detectadas:</h4>
-                <div class="skills-list">
-                    ${hero.skills.map((skill, i) => `
-                        <div class="skill-item">
-                            <strong>${skill.nombre}</strong>
-                            <p>${skill.descripcion}</p>
-                        </div>
-                    `).join('')}
+        `;
+        return;
+    }
+    
+    elements.heroesList.innerHTML = appState.heroes.map(hero => `
+        <div class="hero-item" onclick="loadHeroToForm(${hero.id})">
+            <img src="${hero.icon || hero.imagen || 'https://via.placeholder.com/50x50'}" 
+                 alt="${hero.nombre}"
+                 onerror="this.src='https://via.placeholder.com/50x50'">
+            <div>
+                <div style="font-weight: bold; color: #00ff88;">${hero.nombre}</div>
+                <div style="font-size: 0.9rem; color: #aaa;">
+                    ${Array.isArray(hero.rol) ? hero.rol.join(', ') : hero.rol}
+                    <span style="margin-left: 10px; background: #333; padding: 2px 8px; border-radius: 10px;">
+                        ID: ${hero.id}
+                    </span>
                 </div>
-            </div>
-            
-            <div class="scraped-actions">
-                <button class="btn btn-small" onclick="fillFormWithData(${JSON.stringify(hero).replace(/"/g, '&quot;')})">
-                    <i class="fas fa-check"></i> Usar estos datos
-                </button>
             </div>
         </div>
-    `;
+    `).join('');
 }
 
-// Llenar formulario con datos scrapeados
-function fillFormWithData(hero) {
-    if (elements.heroName) elements.heroName.value = hero.nombre || '';
-    if (elements.heroRole) elements.heroRole.value = hero.rol || '';
-    if (elements.winRate) elements.winRate.value = hero.winRate || '';
-    if (elements.heroImage) elements.heroImage.value = hero.imagen || '';
-    if (elements.iconImage) elements.iconImage.value = hero.icon || '';
+// CARGAR HÉROE AL FORMULARIO
+async function loadHeroToForm(heroId) {
+    try {
+        const response = await fetch(`${API_ENDPOINTS.heroes}/${heroId}`);
+        if (!response.ok) throw new Error('Héroe no encontrado');
+        
+        const hero = await response.json();
+        appState.currentHero = hero;
+        appState.isEditing = true;
+        
+        // Llenar formulario
+        fillForm(hero);
+        
+        showNotification(`📝 Editando: ${hero.nombre}`, 'info');
+        
+    } catch (error) {
+        showNotification('❌ Error cargando héroe', 'error');
+    }
+}
+
+// LLENAR FORMULARIO
+function fillForm(hero) {
+    elements.heroId.value = hero.id;
+    elements.heroName.value = hero.nombre || '';
+    elements.heroRole.value = hero.rol || '';
+    elements.winRate.value = hero.winRate || '';
+    elements.linea.value = hero.linea || '';
+    elements.heroImage.value = hero.imagen || '';
+    elements.iconImage.value = hero.icon || '';
+    elements.guideImage.value = hero.guia || '';
     
     // Llenar habilidades
     if (hero.skills && hero.skills.length >= 4) {
         for (let i = 0; i < 4; i++) {
             const skill = hero.skills[i];
-            const skillName = document.getElementById(`skill${i+1}Name`);
-            const skillDesc = document.getElementById(`skill${i+1}Desc`);
-            const skillImg = document.getElementById(`skill${i+1}Image`);
-            
-            if (skillName) skillName.value = skill.nombre || '';
-            if (skillDesc) skillDesc.value = skill.descripcion || '';
-            if (skillImg) skillImg.value = skill.imagen || '';
+            document.getElementById(`skill${i+1}Name`).value = skill.nombre || '';
+            document.getElementById(`skill${i+1}Desc`).value = skill.descripcion || '';
+            document.getElementById(`skill${i+1}Image`).value = skill.imagen || '';
         }
     }
     
-    showNotification('Formulario completado automáticamente', 'success');
+    // Actualizar botón
+    elements.saveBtn.innerHTML = '<i class="fas fa-sync-alt"></i> ACTUALIZAR HÉROE';
+    updatePreview();
 }
 
-// Cambiar tab
-function switchTab(tabId) {
-    // Remover active de todos
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
+// GENERAR CAMPOS DE HABILIDADES
+function generateSkillsFields() {
+    if (!elements.skillsContainer) return;
     
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.remove('active');
-    });
+    const skills = [
+        { number: 1, label: 'HABILIDAD 1' },
+        { number: 2, label: 'HABILIDAD 2' },
+        { number: 3, label: 'HABILIDAD 3' },
+        { number: 4, label: 'ULTIMATE' }
+    ];
     
-    // Activar seleccionado
-    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-    document.getElementById(`tab-${tabId}`).classList.add('active');
+    elements.skillsContainer.innerHTML = skills.map(skill => `
+        <div class="skill-card">
+            <h4>${skill.label}</h4>
+            <div class="form-group">
+                <label>Nombre *</label>
+                <input type="text" id="skill${skill.number}Name" required 
+                       placeholder="Ej: Buff, AOE, CC">
+            </div>
+            <div class="form-group">
+                <label>Descripción *</label>
+                <textarea id="skill${skill.number}Desc" required rows="3" 
+                          placeholder="Descripción de la habilidad..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Imagen *</label>
+                <input type="url" id="skill${skill.number}Image" required 
+                       placeholder="https://akmweb.../skill.png">
+            </div>
+        </div>
+    `).join('');
 }
 
-// Control scraping UI
-function setScraping(isScraping) {
-    appState.isScraping = isScraping;
+// CONFIGURAR EVENTOS
+function setupEventListeners() {
+    // Formulario
+    if (elements.form) {
+        elements.form.addEventListener('submit', handleSubmit);
+    }
     
-    const buttons = document.querySelectorAll('.btn-scrape');
-    buttons.forEach(btn => {
-        btn.disabled = isScraping;
-        if (isScraping) {
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obteniendo...';
-        } else {
-            btn.innerHTML = '<i class="fas fa-search"></i> Obtener datos';
+    // Botones
+    if (elements.clearBtn) {
+        elements.clearBtn.addEventListener('click', clearForm);
+    }
+    
+    if (elements.autoFillBtn) {
+        elements.autoFillBtn.addEventListener('click', autoFillForm);
+    }
+    
+    if (elements.refreshStatsBtn) {
+        elements.refreshStatsBtn.addEventListener('click', loadStats);
+    }
+    
+    if (elements.exportBtn) {
+        elements.exportBtn.addEventListener('click', exportData);
+    }
+    
+    if (elements.backupBtn) {
+        elements.backupBtn.addEventListener('click', createBackup);
+    }
+    
+    if (elements.deleteAllBtn) {
+        elements.deleteAllBtn.addEventListener('click', confirmDeleteAll);
+    }
+}
+
+// MANEJAR ENVÍO DEL FORMULARIO
+async function handleSubmit(e) {
+    e.preventDefault();
+    
+    try {
+        const heroData = getFormData();
+        
+        if (!validateForm(heroData)) {
+            return;
         }
+        
+        // Determinar si es crear o actualizar
+        const isUpdate = appState.isEditing && appState.currentHero;
+        
+        const url = isUpdate 
+            ? `${API_ENDPOINTS.heroes}/${appState.currentHero.id}`
+            : API_ENDPOINTS.heroes;
+        
+        const method = isUpdate ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(heroData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            showNotification(`✅ ${result.message}`, 'success');
+            
+            // Recargar datos
+            await loadStats();
+            await loadHeroes();
+            
+            // Limpiar formulario si no es edición
+            if (!isUpdate) {
+                clearForm();
+            }
+        } else {
+            throw new Error(result.error || 'Error desconocido');
+        }
+        
+    } catch (error) {
+        showNotification(`❌ Error: ${error.message}`, 'error');
+        console.error('Submit error:', error);
+    }
+}
+
+// OBTENER DATOS DEL FORMULARIO
+function getFormData() {
+    const heroData = {
+        nombre: elements.heroName.value.trim(),
+        rol: elements.heroRole.value,
+        winRate: elements.winRate.value.trim(),
+        linea: elements.linea.value.trim(),
+        imagen: elements.heroImage.value.trim(),
+        icon: elements.iconImage.value.trim(),
+        guia: elements.guideImage.value.trim(),
+        skills: []
+    };
+    
+    // Agregar habilidades
+    for (let i = 1; i <= 4; i++) {
+        heroData.skills.push({
+            nombre: document.getElementById(`skill${i}Name`).value.trim(),
+            descripcion: document.getElementById(`skill${i}Desc`).value.trim(),
+            imagen: document.getElementById(`skill${i}Image`).value.trim()
+        });
+    }
+    
+    return heroData;
+}
+
+// VALIDAR FORMULARIO
+function validateForm(data) {
+    // Validar campos requeridos
+    if (!data.nombre || !data.rol || !data.winRate || !data.imagen || !data.icon) {
+        showNotification('❌ Complete todos los campos obligatorios', 'error');
+        return false;
+    }
+    
+    // Validar habilidades
+    for (let i = 0; i < data.skills.length; i++) {
+        const skill = data.skills[i];
+        if (!skill.nombre || !skill.descripcion || !skill.imagen) {
+            showNotification(`❌ Complete la habilidad ${i + 1}`, 'error');
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// LIMPIAR FORMULARIO
+function clearForm() {
+    elements.form.reset();
+    elements.heroId.value = '';
+    appState.currentHero = null;
+    appState.isEditing = false;
+    
+    // Resetear botón
+    elements.saveBtn.innerHTML = '<i class="fas fa-save"></i> GUARDAR HÉROE';
+    
+    updatePreview();
+    showNotification('🧹 Formulario limpiado', 'info');
+}
+
+// AUTO-COMPLETAR FORMULARIO
+function autoFillForm() {
+    // Datos de ejemplo para pruebas
+    elements.heroName.value = 'Nuevo Héroe';
+    elements.heroRole.value = 'Tirador';
+    elements.winRate.value = '52.5%';
+    elements.linea.value = 'Gold Lane';
+    elements.heroImage.value = 'https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_32c0d9d3a727a9052754296af6251435.png';
+    elements.iconImage.value = 'https://akmweb.youngjoygame.com/web/gms/image/025c69a764924f4bac526a2662f1a0b9.png';
+    elements.guideImage.value = 'https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0iAEVjjAAC2G6fDQV8498.jpg';
+    
+    // Habilidades de ejemplo
+    for (let i = 1; i <= 4; i++) {
+        document.getElementById(`skill${i}Name`).value = `Habilidad ${i}`;
+        document.getElementById(`skill${i}Desc`).value = `Descripción de la habilidad ${i}`;
+        document.getElementById(`skill${i}Image`).value = 'https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_fbe01740efd779f6059fd2313b427457.png';
+    }
+    
+    updatePreview();
+    showNotification('🤖 Formulario auto-completado', 'info');
+}
+
+// PREVIEW EN TIEMPO REAL
+function setupRealTimePreview() {
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('input', updatePreview);
+        input.addEventListener('change', updatePreview);
     });
 }
 
-// Mostrar notificación
-function showNotification(message, type = 'info') {
-    // Implementar notificación
-    alert(`${type.toUpperCase()}: ${message}`);
-}
-
-// Cargar campos de habilidades dinámicamente
-function loadSkillsFields() {
-    const container = document.querySelector('.skills-grid');
-    if (!container) return;
+// ACTUALIZAR VISTA PREVIA
+function updatePreview() {
+    if (!elements.previewContainer) return;
     
-    const skillsHTML = `
-        ${[1,2,3,4].map(i => `
-            <div class="skill-group">
-                <h4>Habilidad ${i} ${i === 4 ? '(Ultimate)' : ''}</h4>
-                <div class="form-group">
-                    <label for="skill${i}Name">Nombre *</label>
-                    <input type="text" id="skill${i}Name" required>
-                </div>
-                <div class="form-group">
-                    <label for="skill${i}Desc">Descripción *</label>
-                    <textarea id="skill${i}Desc" required rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="skill${i}Image">URL Imagen *</label>
-                    <input type="url" id="skill${i}Image" required>
+    const heroData = getFormData();
+    
+    if (!heroData.nombre) {
+        elements.previewContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #aaa;">
+                <i class="fas fa-user-circle" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <p>Los datos del héroe aparecerán aquí</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const skillsHTML = heroData.skills.map((skill, index) => `
+        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+            <div style="font-weight: bold; color: #00ff88;">${skill.nombre || `Habilidad ${index + 1}`}</div>
+            <div style="font-size: 0.9rem; color: #ccc;">${skill.descripcion || 'Sin descripción'}</div>
+        </div>
+    `).join('');
+    
+    elements.previewContainer.innerHTML = `
+        <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 10px;">
+            <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+                <img src="${heroData.icon || heroData.imagen || 'https://via.placeholder.com/80x80'}" 
+                     style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #00ff88;"
+                     onerror="this.src='https://via.placeholder.com/80x80'">
+                <div>
+                    <h3 style="color: #00ff88; margin-bottom: 5px;">${heroData.nombre}</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <span style="background: #333; padding: 5px 10px; border-radius: 20px;">
+                            ${heroData.rol || 'Sin rol'}
+                        </span>
+                        <span style="background: #333; padding: 5px 10px; border-radius: 20px;">
+                            ${heroData.winRate || 'Sin win rate'}
+                        </span>
+                    </div>
+                    ${heroData.linea ? `<div style="color: #aaa;">Línea: ${heroData.linea}</div>` : ''}
                 </div>
             </div>
-        `).join('')}
+            
+            <div style="margin-top: 20px;">
+                <h4 style="color: #00ff88; margin-bottom: 10px;">Habilidades:</h4>
+                ${skillsHTML}
+            </div>
+            
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                <div style="color: #aaa; font-size: 0.9rem;">
+                    ${appState.isEditing ? 'Modo: Edición' : 'Modo: Creación'}
+                    • ID: ${appState.isEditing ? appState.currentHero.id : appState.nextId}
+                </div>
+            </div>
+        </div>
     `;
-    
-    container.innerHTML = skillsHTML;
 }
 
-// Inicializar
+// EXPORTAR DATOS
+async function exportData() {
+    try {
+        const response = await fetch(API_ENDPOINTS.heroes);
+        const heroes = await response.json();
+        
+        const jsonString = JSON.stringify(heroes, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `mlbb-heroes-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        URL.revokeObjectURL(url);
+        
+        showNotification('💾 JSON exportado exitosamente', 'success');
+        
+    } catch (error) {
+        showNotification('❌ Error exportando datos', 'error');
+    }
+}
+
+// CREAR BACKUP
+function createBackup() {
+    const backup = {
+        timestamp: new Date().toISOString(),
+        totalHeroes: appState.totalHeroes,
+        heroes: appState.heroes
+    };
+    
+    const jsonString = JSON.stringify(backup, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mlbb-backup-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    URL.revokeObjectURL(url);
+    
+    showNotification('💾 Backup creado exitosamente', 'success');
+}
+
+// CONFIRMAR ELIMINAR TODOS
+function confirmDeleteAll() {
+    if (!confirm('⚠️ ¿ESTÁS SEGURO?\n\nEsta acción eliminará TODOS los héroes y NO se puede deshacer.')) {
+        return;
+    }
+    
+    if (!confirm('⛔ ¿REALMENTE SEGURO?\n\nSe eliminarán permanentemente todos los héroes.')) {
+        return;
+    }
+    
+    showNotification('❌ Función de eliminación masiva desactivada por seguridad', 'error');
+}
+
+// MOSTRAR NOTIFICACIÓN
+function showNotification(message, type = 'info') {
+    if (!elements.notification || !elements.notificationText) return;
+    
+    elements.notificationText.textContent = message;
+    
+    // Colores según tipo
+    switch(type) {
+        case 'success':
+            elements.notification.style.borderLeftColor = '#00ff88';
+            break;
+        case 'error':
+            elements.notification.style.borderLeftColor = '#ff4757';
+            break;
+        case 'warning':
+            elements.notification.style.borderLeftColor = '#ffa502';
+            break;
+        default:
+            elements.notification.style.borderLeftColor = '#3498db';
+    }
+    
+    elements.notification.classList.add('show');
+    
+    // Auto-ocultar
+    setTimeout(() => {
+        elements.notification.classList.remove('show');
+    }, 4000);
+}
+
+// HACER FUNCIONES GLOBALES
+window.loadHeroToForm = loadHeroToForm;
+window.clearForm = clearForm;
+window.autoFillForm = autoFillForm;
+
+// INICIAR CUANDO EL DOM ESTÉ LISTO
 document.addEventListener('DOMContentLoaded', init);
