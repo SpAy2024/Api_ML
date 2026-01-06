@@ -620,6 +620,41 @@ const heroes = [
       }
     ],
     "linea": ""
+  },
+  {
+    "id": 20,
+    "nombre": "Lolita",
+    "rol": "Tanque",
+    "winRate": "49.5%",
+    "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_55de18c865efe8e360b3b9ae463d76a2.png",
+    "icon": [
+      "https://akmweb.youngjoygame.com/web/gms/image/1e4609b25a4cd63ee5a13015d4058159.png",
+      "https://akmweb.youngjoygame.com/web/gms/image/60638c59536d9505c9c731af13f7fdfd.png"
+    ],
+    "guia": "",
+    "skills": [
+      {
+        "nombre": "Blindaje",
+        "descripcion": "Escudo",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_2_1_18/100_eb33edd56da79e4dbe8601648e2cb07a.png"
+      },
+      {
+        "nombre": "Movilidad CC",
+        "descripcion": "Stun",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e3672153fbf1dbeb4a98243958f9deb7.png"
+      },
+      {
+        "nombre": "Blindaje Daño",
+        "descripcion": "Curación",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_a4ce274e4ea7ccb436e0adfec05457aa.png"
+      },
+      {
+        "nombre": "CC area",
+        "descripcion": "Daño área",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_70f534ce6bfaa6640646551419211d4c.png"
+      }
+    ],
+    "linea": ""
   }
 ];
 
