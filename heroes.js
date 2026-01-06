@@ -624,7 +624,7 @@ const heroes = [
   {
     "id": 20,
     "nombre": "Lolita",
-    "rol": [ "Tanque","Apoyo" ],
+    "rol": [ "Tanque","Soporte" ],
     "winRate": "49.5%",
     "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_55de18c865efe8e360b3b9ae463d76a2.png",
     "icon": [
@@ -636,7 +636,7 @@ const heroes = [
       {
         "nombre": "Blindaje",
         "descripcion": "Escudo",
-        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_55de18c865efe8e360b3b9ae463d76a2.png"
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_8c26e0d0018fb46934ec1e079ddbe695.png"
       },
       {
         "nombre": "Movilidad CC",
