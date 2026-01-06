@@ -624,7 +624,7 @@ const heroes = [
   {
     "id": 20,
     "nombre": "Lolita",
-    "rol": "Tanque",
+    "rol": "Tanque","Apoyo"
     "winRate": "49.5%",
     "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_55de18c865efe8e360b3b9ae463d76a2.png",
     "icon": [
@@ -636,22 +636,22 @@ const heroes = [
       {
         "nombre": "Blindaje",
         "descripcion": "Escudo",
-        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage_2_1_18/100_eb33edd56da79e4dbe8601648e2cb07a.png"
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_55de18c865efe8e360b3b9ae463d76a2.png"
       },
       {
         "nombre": "Movilidad CC",
         "descripcion": "Stun",
-        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e3672153fbf1dbeb4a98243958f9deb7.png"
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_e1554a16e239a56ab24a59ed06542a07.png"
       },
       {
         "nombre": "Blindaje Daño",
         "descripcion": "Curación",
-        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_a4ce274e4ea7ccb436e0adfec05457aa.png"
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_c667899aa7f531fa5b199327be638d54.png"
       },
       {
         "nombre": "CC area",
         "descripcion": "Daño área",
-        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_70f534ce6bfaa6640646551419211d4c.png"
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_139bfe9c5e5ab063c0988222a5a3c456.png"
       }
     ],
     "linea": ""
