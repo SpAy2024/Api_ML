@@ -624,7 +624,7 @@ const heroes = [
   {
     "id": 20,
     "nombre": "Lolita",
-    "rol": "Tanque","Apoyo"
+    "rol": [ "Tanque","Apoyo" ],
     "winRate": "49.5%",
     "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_55de18c865efe8e360b3b9ae463d76a2.png",
     "icon": [
