@@ -624,7 +624,10 @@ const heroes = [
   {
     "id": 20,
     "nombre": "Lolita",
-    "rol": [ "Tanque","Soporte" ],
+    "rol": [
+      "Tanque",
+      "Soporte"
+    ],
     "winRate": "49.5%",
     "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_55de18c865efe8e360b3b9ae463d76a2.png",
     "icon": [
@@ -652,6 +655,38 @@ const heroes = [
         "nombre": "CC area",
         "descripcion": "Daño área",
         "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_139bfe9c5e5ab063c0988222a5a3c456.png"
+      }
+    ],
+    "linea": ""
+  },
+  {
+    "id": 21,
+    "nombre": "Layla",
+    "rol": "Tirador",
+    "winRate": "47.90%",
+    "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_6efe9abc2047f59d45fa1c88fb1261b7.png",
+    "icon": "https://akmweb.youngjoygame.com/web/gms/image/025c69a764924f4bac526a2662f1a0b9.png",
+    "guia": "https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg2-ASeTOAADItEvavQ8402.jpg",
+    "skills": [
+      {
+        "nombre": "Buff",
+        "descripcion": "Pistola maléfica",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_ba25b082b2a373138d398a32499e0544.png"
+      },
+      {
+        "nombre": "Explosión",
+        "descripcion": "Bomba maléfica",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_b00ff9edafd44eeee4af815f24c14653.png"
+      },
+      {
+        "nombre": "CC",
+        "descripcion": "Proyectil el vacio",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_03f3b37b699108735c77c0197acac646.png"
+      },
+      {
+        "nombre": "Explocion",
+        "descripcion": "Fiebre de destrucción",
+        "imagen": "https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_8410070e72f25785078a91c793a39cc0.png"
       }
     ],
     "linea": ""
