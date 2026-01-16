@@ -317,6 +317,15 @@ function getFormData() {
         ? iconValue.split(',').map(i => i.trim()).filter(i => i)
         : iconValue;
     
+    // Procesar counters
+    const counters = [];
+    for (let i = 1; i <= 6; i++) {
+        const counterUrl = getValue(`counter${i}`);
+        if (counterUrl) {
+            counters.push(counterUrl);
+        }
+    }
+    
     return {
         nombre: getValue('heroName'),
         rol: roles,
@@ -324,6 +333,7 @@ function getFormData() {
         imagen: getValue('heroImage'),
         icon: icons,
         guia: getValue('guideImage'),
+        counters: counters.length > 0 ? counters : null, // Agregar counters
         skills: [
             {
                 nombre: getValue('skill1Name'),
@@ -348,7 +358,6 @@ function getFormData() {
         ]
     };
 }
-
 // Validar datos del formulario
 function validateFormData(data) {
     // Validar campos obligatorios
@@ -401,6 +410,30 @@ function validateFormData(data) {
         return false;
     }
     
+    // Validar counters (al menos 2 si se ingresaron algunos)
+    if (data.counters) {
+        const counterUrls = data.counters.filter(url => url.trim() !== '');
+        if (counterUrls.length > 0 && counterUrls.length < 2) {
+            showNotification('Se requieren al menos 2 contadores válidos', 'error');
+            for (let i = 1; i <= 2; i++) {
+                const counterInput = document.getElementById(`counter${i}`);
+                if (counterInput && !counterInput.value.trim()) {
+                    counterInput.style.borderColor = 'var(--danger-color)';
+                    setTimeout(() => {
+                        counterInput.style.borderColor = '';
+                    }, 3000);
+                }
+            }
+            return false;
+        }
+        
+        // Validar que los contadores no sean más de 6
+        if (counterUrls.length > 6) {
+            showNotification('Máximo 6 contadores permitidos', 'error');
+            return false;
+        }
+    }
+    
     // Validar habilidades
     const skillFields = [
         { id: 'skill1Name', idDesc: 'skill1Desc', idImg: 'skill1Image' },
@@ -450,6 +483,26 @@ function updatePreview() {
         const roles = Array.isArray(hero.rol) ? hero.rol : [hero.rol];
         const icons = Array.isArray(hero.icon) ? hero.icon : [hero.icon];
         
+        // Construir HTML de counters
+        let countersHTML = '';
+        if (hero.counters && hero.counters.length > 0) {
+            countersHTML = `
+                <div class="preview-counters">
+                    <h4><i class="fas fa-crosshairs"></i> Counters</h4>
+                    <div class="preview-counters-grid">
+                        ${hero.counters.map((counter, index) => `
+                            <div class="preview-counter-item">
+                                <img src="${counter}" 
+                                     alt="Counter ${index + 1}" 
+                                     onerror="this.src='https://via.placeholder.com/50x50/2d3748/ffffff?text=C${index + 1}'">
+                                <span class="counter-number">${index + 1}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
         elements.heroPreview.innerHTML = `
             <div class="preview-hero-card">
                 <div class="preview-header">
@@ -466,6 +519,8 @@ function updatePreview() {
                     </div>
                 </div>
                 
+                ${countersHTML}
+                
                 <div class="preview-skills">
                     ${hero.skills.map((skill, index) => `
                         <div class="preview-skill">
@@ -480,6 +535,7 @@ function updatePreview() {
                         <span><i class="fas fa-id-card"></i> ID: ${appState.nextId}</span>
                         <span><i class="fas fa-images"></i> Iconos: ${icons.length}</span>
                         <span><i class="fas fa-bolt"></i> Habilidades: 4/4</span>
+                        ${hero.counters ? `<span><i class="fas fa-crosshairs"></i> Counters: ${hero.counters.length}</span>` : ''}
                     </div>
                 </div>
             </div>
@@ -492,21 +548,27 @@ function updatePreview() {
                 <p>Complete el formulario para ver cómo quedará el nuevo héroe</p>
                 <div class="preview-info-box">
                     <p><i class="fas fa-info-circle"></i> El sistema asignará automáticamente el ID <strong>${appState.nextId}</strong></p>
+                    <p><i class="fas fa-crosshairs"></i> Puede agregar hasta 6 counters</p>
                 </div>
             </div>
         `;
     }
 }
-
 // Resetear formulario
 function resetForm() {
     if (elements.form) {
         elements.form.reset();
+        // Resetear counters específicamente
+        for (let i = 1; i <= 6; i++) {
+            const counterInput = document.getElementById(`counter${i}`);
+            if (counterInput) {
+                counterInput.value = '';
+            }
+        }
         updatePreview();
         showNotification('Formulario limpiado 🔄', 'info');
     }
 }
-
 // Cargar datos de ejemplo
 function loadExampleData() {
     const exampleData = {
@@ -516,6 +578,13 @@ function loadExampleData() {
         heroImage: 'https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_32c0d9d3a727a9052754296af6251435.png',
         iconImage: 'https://akmweb.youngjoygame.com/web/gms/image/025c69a764924f4bac526a2662f1a0b9.png',
         guideImage: 'https://img.mobilelegends.com/group1/M00/00/BB/rBEABWWBg0iAEVjjAAC2G6fDQV8498.jpg',
+        // Agregar counters de ejemplo
+        counter1: 'https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_b4a5e537894bdc00787e80e4d3ada5dd.png',
+        counter2: 'https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/200_hero_icon.png',
+        counter3: 'https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/300_hero_icon.png',
+        counter4: '',
+        counter5: '',
+        counter6: '',
         skill1Name: 'Disparo Lejano',
         skill1Desc: 'Aumenta el rango de ataque básico',
         skill1Image: 'https://akmweb.youngjoygame.com/web/svnres/img/mlbb/homepage/100_fbe01740efd779f6059fd2313b427457.png',
@@ -540,7 +609,6 @@ function loadExampleData() {
     updatePreview();
     showNotification('Datos de ejemplo cargados ✨', 'success');
 }
-
 // Exportar a portapapeles
 async function exportToClipboard() {
     try {
@@ -642,3 +710,4 @@ window.debug = {
     testAPI: () => checkAPIStatus(),
     reloadStats: () => loadStats()
 };
+
