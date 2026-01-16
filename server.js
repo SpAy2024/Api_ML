@@ -163,6 +163,7 @@ app.post("/api/heroes", async (req, res) => {
       imagen: nuevoHeroe.imagen || "",
       icon: nuevoHeroe.icon || "",
       guia: nuevoHeroe.guia || "",
+      counters: nuevoHeroe.counters || [], // Agregar counters
       skills: nuevoHeroe.skills || [],
       linea: nuevoHeroe.linea || ""
     };
@@ -338,3 +339,4 @@ app.listen(PORT, () => {
   console.log(`🔗 GitHub Sync: ${GITHUB_TOKEN ? '✅ Configurado' : '❌ No configurado'}`);
   console.log(`🎮 Héroes disponibles: ${heroes.slice(0, 3).map(h => h.nombre).join(', ')}${heroes.length > 3 ? ` y ${heroes.length - 3} más` : ''}`);
 });
+
