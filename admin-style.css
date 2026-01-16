@@ -220,6 +220,138 @@ body {
     font-size: 1.1rem;
 }
 
+/* Estilos para la sección de counters en el formulario */
+.counters-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 10px;
+}
+
+@media (min-width: 768px) {
+    .counters-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.counter-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.counter-input-group label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.counter-input-group input {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.counter-input-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Estilos para la vista previa de counters */
+.preview-counters {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid #dc3545;
+}
+
+.preview-counters h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.preview-counters-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.preview-counter-item {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.preview-counter-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.preview-counter-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.counter-number {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Ajustar estats en preview */
+.preview-stats span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Estilos para los placeholders en vista previa */
+.preview-info-box {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    border-left: 3px solid var(--primary-color);
+}
+
+.preview-info-box p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.preview-info-box i {
+    color: var(--primary-color);
+    margin-right: 5px;
+}
+
+
 /* Botones */
 .form-actions {
     display: flex;
