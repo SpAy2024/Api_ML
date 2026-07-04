@@ -5,7 +5,37 @@ const path = require("path");
 const { Octokit } = require("@octokit/rest");
 
 const app = express();
-app.use(cors());
+
+// ✅ CONFIGURACIÓN CORS ESPECÍFICA PARA GITHUB PAGES
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Permitir solicitudes sin origen (como Postman o curl)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'https://spay2024.github.io',
+      'https://api-ml-0c18.onrender.com',
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://localhost:5174'
+    ];
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('❌ Origen bloqueado por CORS:', origin);
+      callback(new Error('No permitido por CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Manejar peticiones preflight
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -26,7 +56,7 @@ try {
   heroes = require("./heroes.js");
   console.log(`✅ ${heroes.length} héroes cargados desde heroes.js`);
 } catch (error) {
-  console.error("❌ Error al cargar héroes.js:", error.message);
+  console.error("❌ Error al cargar heroes.js:", error.message);
   heroes = [];
 }
 
@@ -163,7 +193,7 @@ app.post("/api/heroes", async (req, res) => {
       imagen: nuevoHeroe.imagen || "",
       icon: nuevoHeroe.icon || "",
       guia: nuevoHeroe.guia || "",
-      counters: nuevoHeroe.counters || [], // Agregar counters
+      counters: nuevoHeroe.counters || [],
       skills: nuevoHeroe.skills || [],
       linea: nuevoHeroe.linea || ""
     };
@@ -339,4 +369,3 @@ app.listen(PORT, () => {
   console.log(`🔗 GitHub Sync: ${GITHUB_TOKEN ? '✅ Configurado' : '❌ No configurado'}`);
   console.log(`🎮 Héroes disponibles: ${heroes.slice(0, 3).map(h => h.nombre).join(', ')}${heroes.length > 3 ? ` y ${heroes.length - 3} más` : ''}`);
 });
-
