@@ -1,4 +1,4 @@
-// Configuración
+// Configuración admin-script.js
 const API_BASE_URL = window.location.origin;
 const API_ENDPOINTS = {
     heroes: `${API_BASE_URL}/api/heroes`,
@@ -126,6 +126,7 @@ function updateUI() {
 }
 
 // Actualizar lista de héroes recientes
+// Actualizar lista de héroes recientes
 function updateRecentHeroesList() {
     if (!elements.recentList || !appState.recentHeroes) return;
     
@@ -138,20 +139,52 @@ function updateRecentHeroesList() {
         return;
     }
     
+    // ✅ Nuevo HTML con botón de eliminar
     elements.recentList.innerHTML = appState.recentHeroes.map(hero => `
-        <div class="recent-item">
+        <div class="hero-item">
             <img src="${hero.icon || 'https://via.placeholder.com/40x40?text=Hero'}" 
                  alt="${hero.nombre}"
                  onerror="this.src='https://via.placeholder.com/40x40?text=Error'">
-            <div class="recent-info">
-                <div class="recent-name">${hero.nombre}</div>
-                <div class="recent-role">
-                    ${Array.isArray(hero.rol) ? hero.rol.join(', ') : hero.rol}
+            <div class="hero-info">
+                <div class="hero-name">${hero.nombre}</div>
+                <div class="hero-role">
+                    ${Array.isArray(hero.rol) ? hero.rol.join(', ') : hero.rol} 
                     <span class="hero-id">ID: ${hero.id}</span>
                 </div>
             </div>
+            <button class="btn-delete" onclick="deleteHero(${hero.id}, '${hero.nombre}')" title="Eliminar héroe">
+                <i class="fas fa-trash"></i>
+            </button>
         </div>
     `).join('');
+}
+
+// ✅ Nueva función para eliminar un héroe
+async function deleteHero(id, nombre) {
+    if (!confirm(`¿Estás seguro de que quieres eliminar a "${nombre}" (ID: ${id})?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_ENDPOINTS.heroes}/${id}`, {
+            method: 'DELETE'
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || `Error HTTP ${response.status}`);
+        }
+
+        showNotification(result.message || `✅ Héroe "${nombre}" eliminado exitosamente`, 'success');
+        
+        // Recargar la lista de héroes
+        await loadStats();
+
+    } catch (error) {
+        console.error('Error al eliminar héroe:', error);
+        showNotification(`❌ Error al eliminar: ${error.message}`, 'error');
+    }
 }
 
 // Configurar event listeners
