@@ -225,11 +225,11 @@ try {
   let firebaseHeroes = Array.isArray(data) ? data.filter(Boolean) : Object.values(data || {}).filter(Boolean);
 
   // Adaptar y sanitizar las skills
-  const skillsAdapted = (nuevo.skills || []).map(skill => ({
-    type: sanitize(skill.nombre || skill.type || 'Passive'),
-    description: sanitize(skill.descripcion || skill.description || '')
-  }));
-
+ const skillsAdapted = (nuevo.skills || []).map(skill => ({
+  type: sanitize(skill.nombre || skill.type || 'Passive'),
+  description: sanitize(skill.descripcion || skill.description || ''),
+  imagen: sanitize(skill.imagen || '')  // ✅ Añadir esta línea
+}));
   // Adaptar y sanitizar los counters
   const countersAdapted = (nuevo.counters || []).map(c => sanitize(c));
 
@@ -364,10 +364,11 @@ try {
   const data = snapshot.val();
   let firebaseHeroes = Array.isArray(data) ? data.filter(Boolean) : Object.values(data || {}).filter(Boolean);
 
-  const skillsAdapted = (updatedData.skills || []).map(skill => ({
-    type: skill.nombre || skill.type || 'Passive',
-    description: skill.descripcion || skill.description || ''
-  }));
+  const skillsAdapted = (nuevo.skills || []).map(skill => ({
+  type: sanitize(skill.nombre || skill.type || 'Passive'),
+  description: sanitize(skill.descripcion || skill.description || ''),
+  imagen: sanitize(skill.imagen || '')  // ✅ Añadir esta línea
+}));
 
   const existingIndex = firebaseHeroes.findIndex(h => h.data?.hero_id === heroId);
   const newHeroData = {
