@@ -14,6 +14,9 @@ const { getDatabase } = require('firebase-admin/database');
 const axios = require('axios');
 
 // ✅ Lógica para cargar credenciales (local o Render)
+
+
+// ✅ Cargar credenciales de Firebase (local o Render)
 let serviceAccount;
 
 if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
