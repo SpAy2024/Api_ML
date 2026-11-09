@@ -204,40 +204,47 @@ app.post("/api/heroes", async (req, res) => {
     heroes.push(nuevo);
 
     // ✅ GUARDAR EN FIREBASE
-    let firebaseSuccess = false;
-    try {
-      const snapshot = await db.ref('mlbb/heroes-detailed').once('value');
-      const data = snapshot.val();
-      let firebaseHeroes = Array.isArray(data) ? data.filter(Boolean) : Object.values(data || {}).filter(Boolean);
+    // ✅ GUARDAR EN FIREBASE
+let firebaseSuccess = false;
+try {
+  const snapshot = await db.ref('mlbb/heroes-detailed').once('value');
+  const data = snapshot.val();
+  let firebaseHeroes = Array.isArray(data) ? data.filter(Boolean) : Object.values(data || {}).filter(Boolean);
 
-      const existingIndex = firebaseHeroes.findIndex(h => h.data?.hero_id === nuevoId);
-      const newHeroData = {
-        data: { hero_id: nuevoId },
-        detail: {
-          heroId: nuevoId,
-          name: nuevo.nombre,
-          role: Array.isArray(nuevo.rol) ? nuevo.rol[0] : nuevo.rol,
-          stats: { winRate: nuevo.winRate, pickRate: null, banRate: null },
-          lore: "",
-          skills: nuevo.skills,
-          combos: null,
-          poster: nuevo.imagen,
-          roleIcon: nuevo.icon
-        }
-      };
+  // Adaptar las skills al formato de Firebase (type + description)
+  const skillsAdapted = (nuevo.skills || []).map(skill => ({
+    type: skill.nombre || skill.type || 'Passive',  // Usa 'nombre' si existe, si no 'type'
+    description: skill.descripcion || skill.description || ''
+  }));
 
-      if (existingIndex !== -1) {
-        firebaseHeroes[existingIndex] = newHeroData;
-      } else {
-        firebaseHeroes.push(newHeroData);
-      }
+  const existingIndex = firebaseHeroes.findIndex(h => h.data?.hero_id === nuevoId);
+  const newHeroData = {
+  data: { hero_id: nuevoId }, // ✅ Este ID debe coincidir con el oficial
+  detail: {
+    heroId: nuevoId,
+    name: nuevo.nombre,
+    role: Array.isArray(nuevo.rol) ? nuevo.rol[0] : nuevo.rol,
+    stats: { winRate: nuevo.winRate, pickRate: null, banRate: null },
+    lore: nuevo.lore || "Descripción no disponible.", // ✅ Fallback
+    skills: skillsAdapted,
+    combos: nuevo.combos || [], // ✅ Array vacío en lugar de null
+    poster: nuevo.imagen,
+    roleIcon: nuevo.icon
+  }
+};
 
-      await db.ref('mlbb/heroes-detailed').set(firebaseHeroes);
-      firebaseSuccess = true;
-      console.log(`✅ Héroe ${nuevo.nombre} guardado en Firebase`);
-    } catch (fbError) {
-      console.warn('⚠️ No se pudo guardar en Firebase:', fbError.message);
-    }
+  if (existingIndex !== -1) {
+    firebaseHeroes[existingIndex] = newHeroData;
+  } else {
+    firebaseHeroes.push(newHeroData);
+  }
+
+  await db.ref('mlbb/heroes-detailed').set(firebaseHeroes);
+  firebaseSuccess = true;
+  console.log(`✅ Héroe ${nuevo.nombre} guardado en Firebase`);
+} catch (fbError) {
+  console.warn('⚠️ No se pudo guardar en Firebase:', fbError.message);
+}
 
     // Actualizar en GitHub
     const githubResult = await updateHeroesOnGitHub();
@@ -327,7 +334,47 @@ app.put("/api/heroes/:id", async (req, res) => {
     updatedData.id = heroId;
     
     // Actualizar el héroe
-    heroes[heroIndex] = updatedData;
+    // Después de actualizar el héroe en el array local...
+heroes[heroIndex] = updatedData;
+
+// ✅ ADAPTAR Y GUARDAR EN FIREBASE
+try {
+  const snapshot = await db.ref('mlbb/heroes-detailed').once('value');
+  const data = snapshot.val();
+  let firebaseHeroes = Array.isArray(data) ? data.filter(Boolean) : Object.values(data || {}).filter(Boolean);
+
+  const skillsAdapted = (updatedData.skills || []).map(skill => ({
+    type: skill.nombre || skill.type || 'Passive',
+    description: skill.descripcion || skill.description || ''
+  }));
+
+  const existingIndex = firebaseHeroes.findIndex(h => h.data?.hero_id === heroId);
+  const newHeroData = {
+    data: { hero_id: heroId },
+    detail: {
+      heroId: heroId,
+      name: updatedData.nombre,
+      role: Array.isArray(updatedData.rol) ? updatedData.rol[0] : updatedData.rol,
+      stats: { winRate: updatedData.winRate, pickRate: null, banRate: null },
+      lore: "",
+      skills: skillsAdapted,
+      combos: null,
+      poster: updatedData.imagen,
+      roleIcon: updatedData.icon
+    }
+  };
+
+  if (existingIndex !== -1) {
+    firebaseHeroes[existingIndex] = newHeroData;
+  } else {
+    firebaseHeroes.push(newHeroData);
+  }
+
+  await db.ref('mlbb/heroes-detailed').set(firebaseHeroes);
+  console.log(`✅ Héroe ${updatedData.nombre} actualizado en Firebase`);
+} catch (fbError) {
+  console.warn('⚠️ No se pudo actualizar en Firebase:', fbError.message);
+}
     
     // Actualizar en GitHub
     const githubResult = await updateHeroesOnGitHub();
