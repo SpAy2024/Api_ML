@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Mobile Legends API</title>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/admin-style.css">
 </head>
 <body>
-    <!-- Barra Lateral -->
     <aside class="sidebar">
         <div class="logo">
             <i class="fas fa-gamepad"></i>
@@ -27,7 +24,6 @@
         </div>
     </aside>
 
-    <!-- Contenido Principal -->
     <main class="main-content">
         <header class="top-header">
             <h1>Panel de Administración</h1>
@@ -37,29 +33,19 @@
         </header>
 
         <div class="content-grid">
-
-            <!-- Cargar por ID -->
-<div class="card" style="margin-bottom: 1rem; padding: 1rem;">
-    <h3><i class="fas fa-download"></i> Cargar datos por ID</h3>
-    <div class="form-row">
-        <div class="form-group">
-            <label>ID del Héroe</label>
-            <input type="number" id="loadHeroId" placeholder="Ej: 125" min="1">
-        </div>
-        <div class="form-group" style="display: flex; align-items: flex-end;">
-            <button type="button" id="loadHeroBtn" class="btn btn-primary" style="width: 100%;">
-                <i class="fas fa-cloud-download-alt"></i> Cargar
-            </button>
-        </div>
-    </div>
-</div>
-            <!-- Columna Izquierda: Formulario -->
             <section class="card form-card" id="form-section">
                 <div class="card-header">
                     <h2><i class="fas fa-user-plus"></i> Nuevo Héroe</h2>
                 </div>
                 <form id="heroForm" class="admin-form">
-                    <!-- Información Básica -->
+                    <!-- ✅ NUEVO: Campo ID Oficial -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ID Oficial (ej. 133 para Hirara)</label>
+                            <input type="number" id="heroId" placeholder="Ej: 133" min="1">
+                        </div>
+                    </div>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label>Nombre *</label>
@@ -92,31 +78,26 @@
                         <input type="url" id="guideImage" placeholder="https://...">
                     </div>
 
-                    <!-- Habilidades -->
                     <h3 class="section-title"><i class="fas fa-bolt"></i> Habilidades</h3>
                     <div class="skills-grid">
-                        <!-- Habilidad 1 -->
                         <div class="skill-box">
                             <h4>Habilidad 1</h4>
                             <input type="text" id="skill1Name" required placeholder="Nombre">
                             <textarea id="skill1Desc" required placeholder="Descripción" rows="2"></textarea>
                             <input type="url" id="skill1Image" required placeholder="URL Imagen">
                         </div>
-                        <!-- Habilidad 2 -->
                         <div class="skill-box">
                             <h4>Habilidad 2</h4>
                             <input type="text" id="skill2Name" required placeholder="Nombre">
                             <textarea id="skill2Desc" required placeholder="Descripción" rows="2"></textarea>
                             <input type="url" id="skill2Image" required placeholder="URL Imagen">
                         </div>
-                        <!-- Habilidad 3 -->
                         <div class="skill-box">
                             <h4>Habilidad 3</h4>
                             <input type="text" id="skill3Name" required placeholder="Nombre">
                             <textarea id="skill3Desc" required placeholder="Descripción" rows="2"></textarea>
                             <input type="url" id="skill3Image" required placeholder="URL Imagen">
                         </div>
-                        <!-- Habilidad 4 -->
                         <div class="skill-box">
                             <h4>Habilidad 4 (Ultimate)</h4>
                             <input type="text" id="skill4Name" required placeholder="Nombre">
@@ -125,7 +106,6 @@
                         </div>
                     </div>
 
-                    <!-- Counters -->
                     <h3 class="section-title"><i class="fas fa-crosshairs"></i> Counters (Opcional)</h3>
                     <div class="counters-grid">
                         <input type="url" id="counter1" placeholder="URL Counter 1">
@@ -136,7 +116,6 @@
                         <input type="url" id="counter6" placeholder="URL Counter 6">
                     </div>
 
-                    <!-- Botones -->
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary" id="saveBtn">
                             <i class="fas fa-save"></i> Guardar Héroe
@@ -148,20 +127,16 @@
                 </form>
             </section>
 
-            <!-- Columna Derecha: Lista de Héroes y Vista Previa -->
             <section class="card list-card" id="heroes-list">
                 <div class="card-header">
                     <h2><i class="fas fa-list"></i> Héroes Registrados</h2>
                     <span id="totalHeroes" class="badge">0</span>
                 </div>
-                <div id="recentList" class="hero-list">
-                    <!-- Aquí se cargarán los héroes -->
-                </div>
+                <div id="recentList" class="hero-list"></div>
             </section>
         </div>
     </main>
 
-    <!-- Notificaciones -->
     <div id="notification" class="notification">
         <span id="notificationText"></span>
         <button class="close-notification">&times;</button>
