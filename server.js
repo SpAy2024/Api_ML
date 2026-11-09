@@ -13,6 +13,18 @@ const { initializeApp, cert } = require('firebase-admin/app');
 const { getDatabase } = require('firebase-admin/database');
 const axios = require('axios');
 
+
+///////////////////
+// Función para sanitizar textos
+function sanitize(text) {
+  if (text === null || text === undefined) return '';
+  return String(text)
+    .replace(/[\n\r]+/g, ' ')   // Elimina saltos de línea
+    .replace(/"/g, "'")         // Reemplaza comillas dobles por simples
+    .replace(/\s+/g, ' ')       // Colapsa espacios múltiples
+    .trim();
+}
+
 // ✅ Lógica para cargar credenciales (local o Render)
 
 
@@ -205,33 +217,42 @@ app.post("/api/heroes", async (req, res) => {
 
     // ✅ GUARDAR EN FIREBASE
     // ✅ GUARDAR EN FIREBASE
+// ✅ GUARDAR EN FIREBASE (con sanitización)
 let firebaseSuccess = false;
 try {
   const snapshot = await db.ref('mlbb/heroes-detailed').once('value');
   const data = snapshot.val();
   let firebaseHeroes = Array.isArray(data) ? data.filter(Boolean) : Object.values(data || {}).filter(Boolean);
 
-  // Adaptar las skills al formato de Firebase (type + description)
+  // Adaptar y sanitizar las skills
   const skillsAdapted = (nuevo.skills || []).map(skill => ({
-    type: skill.nombre || skill.type || 'Passive',  // Usa 'nombre' si existe, si no 'type'
-    description: skill.descripcion || skill.description || ''
+    type: sanitize(skill.nombre || skill.type || 'Passive'),
+    description: sanitize(skill.descripcion || skill.description || '')
   }));
+
+  // Adaptar y sanitizar los counters
+  const countersAdapted = (nuevo.counters || []).map(c => sanitize(c));
 
   const existingIndex = firebaseHeroes.findIndex(h => h.data?.hero_id === nuevoId);
   const newHeroData = {
-  data: { hero_id: nuevoId }, // ✅ Este ID debe coincidir con el oficial
-  detail: {
-    heroId: nuevoId,
-    name: nuevo.nombre,
-    role: Array.isArray(nuevo.rol) ? nuevo.rol[0] : nuevo.rol,
-    stats: { winRate: nuevo.winRate, pickRate: null, banRate: null },
-    lore: nuevo.lore || "Descripción no disponible.", // ✅ Fallback
-    skills: skillsAdapted,
-    combos: nuevo.combos || [], // ✅ Array vacío en lugar de null
-    poster: nuevo.imagen,
-    roleIcon: nuevo.icon
-  }
-};
+    data: { hero_id: nuevoId },
+    detail: {
+      heroId: nuevoId,
+      name: sanitize(nuevo.nombre),
+      role: sanitize(Array.isArray(nuevo.rol) ? nuevo.rol[0] : nuevo.rol),
+      stats: {
+        winRate: sanitize(nuevo.winRate),
+        pickRate: sanitize(nuevo.pickRate || '0%'),
+        banRate: sanitize(nuevo.banRate || '0%')
+      },
+      lore: sanitize(nuevo.lore || "Descripción no disponible."),
+      skills: skillsAdapted,
+      combos: [],
+      counters: countersAdapted,  // ✅ Añadido
+      poster: sanitize(nuevo.imagen),
+      roleIcon: sanitize(nuevo.icon)
+    }
+  };
 
   if (existingIndex !== -1) {
     firebaseHeroes[existingIndex] = newHeroData;
