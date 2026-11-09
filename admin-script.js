@@ -744,3 +744,56 @@ window.debug = {
     reloadStats: () => loadStats()
 };
 
+// admin-script.js - Cargar héroe por ID
+document.addEventListener('DOMContentLoaded', () => {
+  const loadBtn = document.getElementById('loadHeroBtn');
+  if (loadBtn) {
+    loadBtn.addEventListener('click', async () => {
+      const heroId = document.getElementById('loadHeroId').value;
+      if (!heroId) {
+        showNotification('Por favor, ingresa un ID válido', 'error');
+        return;
+      }
+
+      try {
+        loadBtn.disabled = true;
+        loadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando...';
+
+        // Consultar tu bot de scraping (ml-scraper-api) o Firebase directamente
+        const response = await fetch(`/api/scrape-hero/${heroId}`);
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          // Rellenar el formulario con los datos
+          document.getElementById('heroName').value = result.data.name || '';
+          document.getElementById('heroRole').value = result.data.role || '';
+          document.getElementById('winRate').value = result.data.stats?.winRate || '';
+          document.getElementById('heroImage').value = result.data.poster || '';
+          document.getElementById('iconImage').value = result.data.roleIcon || '';
+
+          // Habilidades
+          if (result.data.skills && result.data.skills.length > 0) {
+            result.data.skills.forEach((skill, index) => {
+              const i = index + 1;
+              const nameInput = document.getElementById(`skill${i}Name`);
+              const descInput = document.getElementById(`skill${i}Desc`);
+              if (nameInput) nameInput.value = skill.type || '';
+              if (descInput) descInput.value = skill.description || '';
+            });
+          }
+
+          showNotification(`Datos de ${result.data.name} cargados correctamente`, 'success');
+        } else {
+          showNotification('No se encontraron datos para ese ID', 'error');
+        }
+      } catch (error) {
+        console.error('Error al cargar:', error);
+        showNotification('Error al cargar los datos', 'error');
+      } finally {
+        loadBtn.disabled = false;
+        loadBtn.innerHTML = '<i class="fas fa-cloud-download-alt"></i> Cargar';
+      }
+    });
+  }
+});
+

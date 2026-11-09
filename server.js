@@ -7,6 +7,20 @@ const { Octokit } = require("@octokit/rest");
 
 const app = express();
 
+// server.js (Api_ML)
+const { initializeApp, cert } = require('firebase-admin/app');
+const { getDatabase } = require('firebase-admin/database');
+const axios = require('axios');
+
+// Cargar la clave de servicio (debes tener el archivo serviceAccountKey.json en la carpeta de Api_ML)
+const serviceAccount = require('./serviceAccountKey.json');
+
+const firebaseApp = initializeApp({
+  credential: cert(serviceAccount),
+  databaseURL: "https://comidas-b1396-default-rtdb.firebaseio.com"
+});
+const db = getDatabase(firebaseApp);
+
 // ✅ CONFIGURACIÓN CORS ESPECÍFICA PARA GITHUB PAGES
 const corsOptions = {
   origin: function (origin, callback) {
@@ -33,6 +47,8 @@ const corsOptions = {
   credentials: true,
   optionsSuccessStatus: 200
 };
+
+
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions)); // Manejar peticiones preflight
@@ -139,37 +155,7 @@ app.get("/admin-script.js", (req, res) => {
   });
 });
 
-// Ruta de prueba
-app.get("/", (req, res) => {
-  res.json({ 
-    mensaje: "API Mobile Legends funcionando 🚀",
-    endpoints: {
-      heroes: "/api/heroes",
-      heroById: "/api/heroes/:id",
-      adminPanel: "/admin",
-      stats: "/api/stats",
-      export: "/api/export",
-      update: "/api/update-github"
-    },
-    totalHeroes: heroes.length,
-    nextId: heroes.length > 0 ? Math.max(...heroes.map(h => h.id)) + 1 : 1,
-    version: "2.0.0",
-    githubSync: !!GITHUB_TOKEN
-  });
-});
 
-// Listar todos los héroes
-app.get("/api/heroes", (req, res) => {
-  res.json(heroes);
-});
-
-// Obtener héroe por ID
-app.get("/api/heroes/:id", (req, res) => {
-  const hero = heroes.find(h => h.id === parseInt(req.params.id));
-  hero ? res.json(hero) : res.status(404).json({ error: "Héroe no encontrado" });
-});
-
-// Agregar nuevo héroe
 app.post("/api/heroes", async (req, res) => {
   try {
     const nuevoHeroe = req.body;
@@ -201,16 +187,54 @@ app.post("/api/heroes", async (req, res) => {
     
     // Agregar al array en memoria
     heroes.push(nuevo);
-    
+
+    // ✅ GUARDAR EN FIREBASE
+    let firebaseSuccess = false;
+    try {
+      const snapshot = await db.ref('mlbb/heroes-detailed').once('value');
+      const data = snapshot.val();
+      let firebaseHeroes = Array.isArray(data) ? data.filter(Boolean) : Object.values(data || {}).filter(Boolean);
+
+      const existingIndex = firebaseHeroes.findIndex(h => h.data?.hero_id === nuevoId);
+      const newHeroData = {
+        data: { hero_id: nuevoId },
+        detail: {
+          heroId: nuevoId,
+          name: nuevo.nombre,
+          role: Array.isArray(nuevo.rol) ? nuevo.rol[0] : nuevo.rol,
+          stats: { winRate: nuevo.winRate, pickRate: null, banRate: null },
+          lore: "",
+          skills: nuevo.skills,
+          combos: null,
+          poster: nuevo.imagen,
+          roleIcon: nuevo.icon
+        }
+      };
+
+      if (existingIndex !== -1) {
+        firebaseHeroes[existingIndex] = newHeroData;
+      } else {
+        firebaseHeroes.push(newHeroData);
+      }
+
+      await db.ref('mlbb/heroes-detailed').set(firebaseHeroes);
+      firebaseSuccess = true;
+      console.log(`✅ Héroe ${nuevo.nombre} guardado en Firebase`);
+    } catch (fbError) {
+      console.warn('⚠️ No se pudo guardar en Firebase:', fbError.message);
+    }
+
     // Actualizar en GitHub
     const githubResult = await updateHeroesOnGitHub();
-    
+
+    // ✅ UNA SOLA RESPUESTA (corregido)
     res.status(201).json({
       success: true,
       message: `Héroe "${nuevo.nombre}" agregado exitosamente`,
       hero: nuevo,
       nextId: nuevoId + 1,
       totalHeroes: heroes.length,
+      firebase: firebaseSuccess ? 'Guardado' : 'Falló',
       githubUpdate: githubResult
     });
     
@@ -220,6 +244,46 @@ app.post("/api/heroes", async (req, res) => {
       error: "Error interno del servidor",
       details: error.message 
     });
+  }
+});
+    
+  
+
+
+//////////////
+// server.js (Api_ML) - NUEVO ENDPOINT
+app.get("/api/scrape-hero/:heroId", async (req, res) => {
+  const { heroId } = req.params;
+
+  try {
+    console.log(`🌐 Obteniendo datos del héroe ${heroId} desde la web oficial...`);
+
+    const response = await axios.get(`https://www.mobilelegends.com/hero/detail?channelid=2727282&heroid=${heroId}`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    });
+
+    // Aquí iría la lógica de parseo (similar a la de Puppeteer, pero con axios y cheerio)
+    // Como es complicado sin Puppeteer, te sugiero que uses el endpoint de tu bot (ml-scraper-api)
+    // y luego consultes Firebase.
+
+    // Alternativa: consultar directamente Firebase
+    const snapshot = await db.ref('mlbb/heroes-detailed').once('value');
+    const data = snapshot.val();
+    const heroes = Array.isArray(data) ? data.filter(Boolean) : Object.values(data || {}).filter(Boolean);
+
+    const hero = heroes.find(h => h.data?.hero_id === parseInt(heroId));
+
+    if (hero) {
+      res.json({ success: true, source: 'firebase', data: hero.detail });
+    } else {
+      res.status(404).json({ success: false, error: 'Héroe no encontrado en Firebase' });
+    }
+
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
