@@ -222,17 +222,19 @@ try {
   const data = snapshot.val();
   let firebaseHeroes = Array.isArray(data) ? data.filter(Boolean) : Object.values(data || {}).filter(Boolean);
 
-  // ✅ Sanitizar skills (nombre, descripción e imagen)
+  // Sanitizar skills
   const skillsAdapted = (nuevo.skills || []).map(skill => ({
     type: sanitize(skill.nombre || skill.type || 'Passive'),
     description: sanitize(skill.descripcion || skill.description || ''),
-    imagen: sanitize(skill.imagen || '')  // ✅ Importante: sanitizar la URL
+    imagen: sanitize(skill.imagen || '')
   }));
 
-  // ✅ Sanitizar counters
+  // Sanitizar counters
   const countersAdapted = (nuevo.counters || []).map(c => sanitize(c));
 
+  // ✅ Buscar si ya existe por hero_id (evita duplicados)
   const existingIndex = firebaseHeroes.findIndex(h => h.data?.hero_id === nuevoId);
+  
   const newHeroData = {
     data: { hero_id: nuevoId },
     detail: {
@@ -253,15 +255,17 @@ try {
     }
   };
 
+  // ✅ Si existe, actualizar; si no, añadir
   if (existingIndex !== -1) {
     firebaseHeroes[existingIndex] = newHeroData;
+    console.log(`✅ Héroe ${nuevo.nombre} actualizado en Firebase`);
   } else {
     firebaseHeroes.push(newHeroData);
+    console.log(`✅ Héroe ${nuevo.nombre} añadido a Firebase`);
   }
 
   await db.ref('mlbb/heroes-detailed').set(firebaseHeroes);
   firebaseSuccess = true;
-  console.log(`✅ Héroe ${nuevo.nombre} guardado en Firebase`);
 } catch (fbError) {
   console.warn('⚠️ No se pudo guardar en Firebase:', fbError.message);
 }
