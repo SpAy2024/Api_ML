@@ -8,12 +8,24 @@ const { Octokit } = require("@octokit/rest");
 const app = express();
 
 // server.js (Api_ML)
+// server.js (Api_ML)
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getDatabase } = require('firebase-admin/database');
 const axios = require('axios');
 
-// Cargar la clave de servicio (debes tener el archivo serviceAccountKey.json en la carpeta de Api_ML)
-const serviceAccount = require('./serviceAccountKey.json');
+// ✅ Lógica para cargar credenciales (local o Render)
+let serviceAccount;
+
+if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
+  // Producción (Render): leer desde variable de entorno
+  const json = Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf-8');
+  serviceAccount = JSON.parse(json);
+  console.log('✅ Firebase configurado desde variable de entorno');
+} else {
+  // Desarrollo local: leer desde archivo
+  serviceAccount = require('./serviceAccountKey.json');
+  console.log('✅ Firebase configurado desde archivo local');
+}
 
 const firebaseApp = initializeApp({
   credential: cert(serviceAccount),
