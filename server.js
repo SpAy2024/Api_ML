@@ -215,22 +215,21 @@ app.post("/api/heroes", async (req, res) => {
     // Agregar al array en memoria
     heroes.push(nuevo);
 
-    // ✅ GUARDAR EN FIREBASE
-    // ✅ GUARDAR EN FIREBASE
-// ✅ GUARDAR EN FIREBASE (con sanitización)
+ // ✅ GUARDAR EN FIREBASE (con sanitización total)
 let firebaseSuccess = false;
 try {
   const snapshot = await db.ref('mlbb/heroes-detailed').once('value');
   const data = snapshot.val();
   let firebaseHeroes = Array.isArray(data) ? data.filter(Boolean) : Object.values(data || {}).filter(Boolean);
 
-  // Adaptar y sanitizar las skills
- const skillsAdapted = (nuevo.skills || []).map(skill => ({
-  type: sanitize(skill.nombre || skill.type || 'Passive'),
-  description: sanitize(skill.descripcion || skill.description || ''),
-  imagen: sanitize(skill.imagen || '')  // ✅ Añadir esta línea
-}));
-  // Adaptar y sanitizar los counters
+  // ✅ Sanitizar skills (nombre, descripción e imagen)
+  const skillsAdapted = (nuevo.skills || []).map(skill => ({
+    type: sanitize(skill.nombre || skill.type || 'Passive'),
+    description: sanitize(skill.descripcion || skill.description || ''),
+    imagen: sanitize(skill.imagen || '')  // ✅ Importante: sanitizar la URL
+  }));
+
+  // ✅ Sanitizar counters
   const countersAdapted = (nuevo.counters || []).map(c => sanitize(c));
 
   const existingIndex = firebaseHeroes.findIndex(h => h.data?.hero_id === nuevoId);
@@ -248,7 +247,7 @@ try {
       lore: sanitize(nuevo.lore || "Descripción no disponible."),
       skills: skillsAdapted,
       combos: [],
-      counters: countersAdapted,  // ✅ Añadido
+      counters: countersAdapted,
       poster: sanitize(nuevo.imagen),
       roleIcon: sanitize(nuevo.icon)
     }
@@ -266,7 +265,6 @@ try {
 } catch (fbError) {
   console.warn('⚠️ No se pudo guardar en Firebase:', fbError.message);
 }
-
     // Actualizar en GitHub
     const githubResult = await updateHeroesOnGitHub();
 
@@ -364,11 +362,13 @@ try {
   const data = snapshot.val();
   let firebaseHeroes = Array.isArray(data) ? data.filter(Boolean) : Object.values(data || {}).filter(Boolean);
 
-  const skillsAdapted = (nuevo.skills || []).map(skill => ({
+  const skillsAdapted = (updatedData.skills || []).map(skill => ({
   type: sanitize(skill.nombre || skill.type || 'Passive'),
   description: sanitize(skill.descripcion || skill.description || ''),
-  imagen: sanitize(skill.imagen || '')  // ✅ Añadir esta línea
+  imagen: sanitize(skill.imagen || '')
 }));
+
+const countersAdapted = (updatedData.counters || []).map(c => sanitize(c));
 
   const existingIndex = firebaseHeroes.findIndex(h => h.data?.hero_id === heroId);
   const newHeroData = {
